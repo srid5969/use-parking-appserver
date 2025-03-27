@@ -16,5 +16,4 @@ export const config = () => ({
   AdminBaseUrl: process.env.ADMIN_BASE_URL || 'http://localhost:3000',
 });
 
-
 export type EnvironmentConfigType = ReturnType<typeof config>;
