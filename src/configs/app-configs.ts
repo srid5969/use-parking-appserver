@@ -1,8 +1,8 @@
-export const config = {
+export const config = () => ({
   port: parseInt(process.env.PORT || '8080', 10),
 
   // #  database configurations
-  dbURI: process.env.MONGODB_CONNECTION_STRING,
+  dbURI: process.env.MONGODB_CONNECTION_STRING as string,
   database: process.env.DATABASE,
 
   // password pepper
@@ -14,6 +14,7 @@ export const config = {
   refreshJwtSecret: process.env.REFRESH_JWT_SECRET,
   refreshTokenExpiry: process.env.REFRESH_JWT_EXPIRY,
   AdminBaseUrl: process.env.ADMIN_BASE_URL || 'http://localhost:3000',
-};
+});
 
-// export type EnvironmentConfigType = ReturnType<typeof config>;
+
+export type EnvironmentConfigType = ReturnType<typeof config>;
