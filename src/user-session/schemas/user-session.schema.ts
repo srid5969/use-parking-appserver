@@ -11,7 +11,7 @@ export class UserSession {
   refresh_token?: string;
 
   @Prop()
-  expiry_at: Date;
+  expiry_at?: Date;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user_id: Types.ObjectId;

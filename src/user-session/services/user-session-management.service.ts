@@ -1,4 +1,141 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import * as jwt from 'jsonwebtoken';
+import * as mongoose from 'mongoose';
+import { AppErrorMessages } from '../../common/consts';
+import { Status } from '../../common/enums';
+import { User } from '../../users/schemas/users.schema';
+import { UserSession } from '../schemas/user-session.schema';
+import { EnvironmentConfigType } from '../../configs';
 
 @Injectable()
-export class UserSessionManagementService {}
+export class UserSessionManagementService {
+  constructor(
+    @InjectModel(UserSession.name)
+    private userSessionModel: mongoose.Model<UserSession>,
+    @InjectModel(User.name)
+    private userModel: mongoose.Model<User>,
+    private configService: ConfigService<EnvironmentConfigType>,
+  ) {}
+
+  async create(userSession: UserSession) {
+    await this.userSessionModel.create(userSession);
+  }
+
+  async logOut(id: string): Promise<UserSession> {
+    try {
+      //Find user session by id
+      const userSession = await this.userSessionModel.findOneAndUpdate(
+        { user_id: id },
+        { status: Status.INACTIVE },
+      );
+      if (!userSession) {
+        throw new NotFoundException('User session not found');
+      }
+      return userSession;
+    } catch (error) {
+      // TODO - refactor this
+      if (error) {
+        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      }
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findById(id: string): Promise<UserSession> {
+    try {
+      //Find user session by id
+      const userSession = await this.userSessionModel.findById(id);
+      if (!userSession) {
+        throw new NotFoundException('User session not found');
+      }
+      return userSession;
+    } catch (error) {
+      // TODO - refactor this
+      if (error) {
+        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      }
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async generateNewTokenUsingRefreshToken(refresh_token: string) {
+    const token = await this.userSessionModel.findOneAndDelete(
+      {
+        refresh_token: refresh_token,
+      },
+      { returnDocument: 'before' },
+    );
+    if (!token) throw new NotFoundException(AppErrorMessages.TOKEN_INVALID);
+    const user = await this.userModel
+      .findById(token.toJSON().user_id)
+      .select(['email', 'phone', 'country_code', 'user_type', 'mobilephone'])
+      .lean();
+    const expiresIn =
+      this.configService.getOrThrow<string>('accessTokenSecret');
+    if (!user) throw new NotFoundException();
+    const tokenPayload = {
+      userId: user._id,
+      user_type: user.user_type,
+      mobilephone: user.mobilephone,
+      country_code: user.country_code,
+      expiresIn,
+    };
+    const access_token = jwt.sign(
+      tokenPayload,
+      this.configService.getOrThrow<string>('accessTokenSecret'),
+      { expiresIn },
+    );
+    refresh_token = jwt.sign(
+      { ...tokenPayload, type: 'refresh_token' },
+      this.configService.getOrThrow<string>('refreshTokenSecret'),
+      { expiresIn: '1d' },
+    );
+    await this.create({
+      access_token,
+      refresh_token,
+      user_id: tokenPayload.userId as mongoose.Types.ObjectId,
+    });
+
+    return { access_token, refresh_token };
+  }
+  async generateNewTokenUsingUserData(user: Partial<User>) {
+    const expiresIn =
+      this.configService.getOrThrow<string>('accessTokenExpiry');
+    const tokenPayload = {
+      userId: user._id,
+      user_type: user.user_type,
+      mobilephone: user.mobilephone,
+      country_code: user.country_code,
+      expiresIn,
+    };
+    const access_token = jwt.sign(
+      tokenPayload,
+      this.configService.getOrThrow<string>('accessTokenSecret'),
+      { expiresIn },
+    );
+    const refresh_token = jwt.sign(
+      { ...tokenPayload, type: 'refresh_token' },
+      this.configService.getOrThrow<string>('refreshTokenSecret'),
+      { expiresIn: '1d' },
+    );
+    await this.create({
+      access_token,
+      refresh_token,
+      user_id: tokenPayload.userId as mongoose.Types.ObjectId,
+    });
+    return { access_token, refresh_token };
+  }
+}

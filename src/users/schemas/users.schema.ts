@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { AddressType, UserStatus, UserTypeEnum } from '../../common/enums';
 
 export class Address {
@@ -26,9 +26,7 @@ export class Address {
 }
 
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
-export class User {
-  _id: Types.ObjectId;
-
+export class User extends Document {
   @Prop()
   name: string;
 
