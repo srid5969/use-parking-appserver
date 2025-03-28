@@ -4,3 +4,9 @@ export enum AddressType {
   WORK = 'work',
   HOME = 'home',
 }
+
+export enum Status {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  DELETED = 'deleted',
+}
