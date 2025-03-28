@@ -4,11 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserStatus, UserTypeEnum } from 'src/common/enums';
-import { User } from '../schemas/users.schema';
 import { Model } from 'mongoose';
-import { MESSAGES } from '@nestjs/core/constants';
-import { AppMessages } from 'src/common/consts';
+import { User } from '../schemas/users.schema';
+import { UserStatus, UserTypeEnum } from '../../common/enums';
+import { AppMessages } from '../../common/consts';
 
 @Injectable()
 export class LoginAuthService {

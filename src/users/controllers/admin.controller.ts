@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoginAuthService } from '../services/login-auth.service';
-import { UserTypeEnum } from 'src/common/enums';
 import { AdminLoginDTO } from '../dtos/admin.dtos';
-import { CommonSuccessResponseObject } from 'src/common/consts';
+import { UserTypeEnum } from '../../common/enums';
+import { CommonSuccessResponseObject } from '../../common/consts';
 
 @Controller('admin')
 export class AdminController {

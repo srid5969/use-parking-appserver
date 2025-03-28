@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { AddressType, UserStatus, UserTypeEnum } from 'src/common/enums';
+import { AddressType, UserStatus, UserTypeEnum } from '../../common/enums';
 
 export class Address {
   @Prop()
