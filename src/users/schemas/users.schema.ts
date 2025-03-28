@@ -46,9 +46,6 @@ export class User extends Document {
   gender: 'male' | 'female' | 'other';
 
   @Prop()
-  username: string;
-
-  @Prop()
   photo: string;
 
   @Prop({ enum: UserTypeEnum })
