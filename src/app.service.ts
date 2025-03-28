@@ -1,8 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  index(): object {
+    const healthcheck = {
+      uptime: process.uptime(),
+      message: 'OK',
+      timestamp: Date.now(),
+    };
+    try {
+      return healthcheck;
+    } catch (error) {
+      throw new ServiceUnavailableException(healthcheck);
+    }
   }
 }
