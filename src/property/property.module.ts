@@ -1,4 +1,12 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Property, PropertySchema } from './schemas/property.schema';
 
-@Module({})
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: Property.name, schema: PropertySchema },
+    ]),
+  ],
+})
 export class PropertyModule {}

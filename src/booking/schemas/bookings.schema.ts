@@ -1,6 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+export class VehicleDetails {
+  @Prop({ required: true })
+  vehicle_number: string;
+  @Prop({ required: true })
+  vehicle_type: string;
+}
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class Booking extends Document<Types.ObjectId> {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
@@ -26,10 +32,7 @@ export class Booking extends Document<Types.ObjectId> {
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
   @Prop({ required: true })
-  vehicle_details: {
-    vehicle_number: string;
-    vehicle_type: string;
-  };
+  vehicle_details: VehicleDetails;
 
   @Prop({
     type: String,

@@ -1,6 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+export class PropertyAddress {
+  @Prop({ required: true })
+  city: string;
+  @Prop({ required: true })
+  country: string;
+  @Prop({ required: true })
+  pinCode: string;
+  @Prop({ required: true })
+  location: [number, number];
+}
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class Property extends Document<Types.ObjectId> {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
@@ -16,12 +26,7 @@ export class Property extends Document<Types.ObjectId> {
   description?: string;
 
   @Prop({ required: true })
-  address: {
-    city: string;
-    country: string;
-    pinCode: string;
-    location: [number, number];
-  };
+  address: PropertyAddress;
 
   @Prop({ required: true })
   price_per_hour: number;
