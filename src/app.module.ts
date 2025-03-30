@@ -7,6 +7,9 @@ import { config } from './configs';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './user-session/user-session.module';
 import { GeneralModule } from './general/general.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { PaymentsModule } from './payments/payments.module';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { GeneralModule } from './general/general.module';
     UsersModule,
     UserSessionModule,
     GeneralModule,
+    NotificationsModule,
+    PaymentsModule,
+    BookingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
