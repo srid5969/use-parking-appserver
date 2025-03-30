@@ -61,7 +61,7 @@ export class User extends Document<Types.ObjectId> {
   @Prop({ type: String, enum: Object.values(UserTypeEnum), required: true })
   user_type: UserTypeEnum;
 
-  @Prop({ type: [{ type: Address }] })
+  @Prop()
   addresses: Address[];
 
   @Prop({

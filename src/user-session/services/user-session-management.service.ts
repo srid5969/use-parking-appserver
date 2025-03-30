@@ -89,8 +89,8 @@ export class UserSessionManagementService {
     const tokenPayload = {
       userId: user._id,
       user_type: user.user_type,
-      mobilephone: user.mobilephone,
-      country_code: user.country_code,
+      mobilephone: user.phone.number,
+      country_code: user.phone.code,
       expiresIn,
     };
     const access_token = jwt.sign(
@@ -117,8 +117,8 @@ export class UserSessionManagementService {
     const tokenPayload = {
       userId: user._id,
       user_type: user.user_type,
-      mobilephone: user.mobilephone,
-      country_code: user.country_code,
+      mobilephone: user.phone?.number,
+      country_code: user.phone?.code,
       expiresIn,
     };
     const access_token = jwt.sign(
