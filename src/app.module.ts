@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { config } from './configs';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './user-session/user-session.module';
+import { GeneralModule } from './general/general.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserSessionModule } from './user-session/user-session.module';
     }),
     UsersModule,
     UserSessionModule,
+    GeneralModule,
   ],
   controllers: [AppController],
   providers: [AppService],

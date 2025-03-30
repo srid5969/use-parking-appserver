@@ -2,69 +2,77 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AddressType, UserStatus, UserTypeEnum } from '../../common/enums';
 
-export class Address {
-  @Prop()
+class Phone {
+  @Prop({ required: true })
+  number: number;
+
+  @Prop({ required: true, default: 91 })
+  code: number;
+}
+
+@Schema()
+class Address {
+  @Prop({ type: Types.ObjectId, auto: true })
   _id?: Types.ObjectId;
 
-  @Prop({ default: AddressType.PRIMARY })
-  type?: AddressType;
+  @Prop({
+    type: String,
+    enum: Object.values(AddressType),
+    default: AddressType.PRIMARY,
+  })
+  type: AddressType;
 
-  @Prop()
+  @Prop({ required: true })
   city: string;
 
-  @Prop()
-  state: string;
-
-  @Prop()
+  @Prop({ required: true })
   country: string;
 
-  @Prop()
-  pincode: string;
+  @Prop({ required: true })
+  pinCode: string;
 
-  @Prop()
-  location?: number[];
+  @Prop({ type: [Number], required: false })
+  location?: [number, number];
 }
 
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
-export class User extends Document {
-  @Prop()
+export class User extends Document<Types.ObjectId> {
+  @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true, lowercase: true })
   email: string;
 
-  @Prop()
-  mobilephone: string;
+  @Prop({ required: true, type: Phone })
+  phone: Phone;
 
-  @Prop({ default: 91 })
-  country_code: number;
-
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop()
-  gender: 'male' | 'female' | 'other';
+  @Prop({ type: String, enum: ['male', 'female', 'others'], required: true })
+  gender: 'male' | 'female' | 'others';
 
   @Prop()
-  photo: string;
+  photo?: string;
 
-  @Prop({ enum: UserTypeEnum })
+  @Prop()
+  about?: string;
+
+  @Prop({ type: String, enum: Object.values(UserTypeEnum), required: true })
   user_type: UserTypeEnum;
 
-  @Prop({ default: UserStatus.PENDING, enum: UserStatus })
-  status: UserStatus;
-
-  @Prop()
+  @Prop({ type: [{ type: Address }] })
   addresses: Address[];
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
-  createdBy: Types.ObjectId;
+  @Prop({
+    type: String,
+    enum: Object.values(UserStatus),
+    default: UserStatus.PENDING,
+  })
+  status: UserStatus;
 
-  @Prop()
-  passwordUpdatedAt: Date;
-
-  @Prop()
-  about: string;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  createdBy?: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
