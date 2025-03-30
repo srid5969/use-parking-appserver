@@ -1,14 +1,14 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { CommonSuccessResponseObject } from '../../common/consts';
-import { AdminLoginDTO } from '../dtos/admin.dtos';
-import { AdminLoginService } from '../services/admin/admin-login.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CommonAuthGuard } from '../../common/auth/auth-gaurd';
-import { AdminProfileService } from '../services/admin/admin-profile.service';
+import { CommonAuthGuard } from '../../common/auth/auth-guard';
+import { CommonSuccessResponseObject } from '../../common/consts';
 import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
+import { AdminLoginDTO } from '../dtos/admin.dtos';
+import { AdminLoginService } from '../services/admin/admin-login.service';
+import { AdminProfileService } from '../services/admin/admin-profile.service';
 
 @Controller('admin')
 export class AdminController {
