@@ -10,6 +10,8 @@ import { GeneralModule } from './general/general.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentsModule } from './payments/payments.module';
 import { BookingModule } from './booking/booking.module';
+import { PropertyModule } from './property/property.module';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { BookingModule } from './booking/booking.module';
     NotificationsModule,
     PaymentsModule,
     BookingModule,
+    PropertyModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
