@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as mongoose from 'mongoose';
 import { AppErrorMessages } from '../../common/consts';
-import { Status } from '../../common/enums';
+import { Status, UserTypeEnum } from '../../common/enums';
 import { User } from '../../users/schemas/users.schema';
 import { UserSession } from '../schemas/user-session.schema';
 import { EnvironmentConfigType } from '../../configs';
@@ -81,7 +81,7 @@ export class UserSessionManagementService {
     if (!token) throw new NotFoundException(AppErrorMessages.TOKEN_INVALID);
     const user = await this.userModel
       .findById(token.toJSON().user_id)
-      .select(['email', 'phone', 'country_code', 'user_type', 'mobilephone'])
+      .select(['email', 'phone', 'user_type'])
       .lean();
     const expiresIn =
       this.configService.getOrThrow<string>('accessTokenSecret');
@@ -101,24 +101,31 @@ export class UserSessionManagementService {
     refresh_token = jwt.sign(
       { ...tokenPayload, type: 'refresh_token' },
       this.configService.getOrThrow<string>('refreshTokenSecret'),
-      { expiresIn: '1d' },
+      {
+        expiresIn: this.configService.getOrThrow<string>('refreshTokenExpiry'),
+      },
     );
     await this.create({
       access_token,
       refresh_token,
-      user_id: tokenPayload.userId as mongoose.Types.ObjectId,
+      user_id: tokenPayload.userId,
     });
 
     return { access_token, refresh_token };
   }
-  async generateNewTokenUsingUserData(user: Partial<User>) {
+  async generateNewTokenUsingUserData(user: {
+    userId: mongoose.Types.ObjectId | string;
+    user_type: UserTypeEnum;
+    mobilePhone: number;
+    phone_code: number;
+  }) {
     const expiresIn =
       this.configService.getOrThrow<string>('accessTokenExpiry');
     const tokenPayload = {
-      userId: user._id,
+      userId: user.userId,
       user_type: user.user_type,
-      mobilephone: user.phone?.number,
-      country_code: user.phone?.code,
+      mobilePhone: user.mobilePhone,
+      phone_code: user.phone_code,
       expiresIn,
     };
     const access_token = jwt.sign(
@@ -129,7 +136,9 @@ export class UserSessionManagementService {
     const refresh_token = jwt.sign(
       { ...tokenPayload, type: 'refresh_token' },
       this.configService.getOrThrow<string>('refreshTokenSecret'),
-      { expiresIn: '1d' },
+      {
+        expiresIn: this.configService.getOrThrow<string>('refreshTokenExpiry'),
+      },
     );
     await this.create({
       access_token,

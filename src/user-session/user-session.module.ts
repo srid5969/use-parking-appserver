@@ -12,5 +12,6 @@ import { UserSessionManagementService } from './services/user-session-management
     ]),
   ],
   providers: [UserSessionManagementService],
+  exports: [UserSessionManagementService],
 })
 export class UserSessionModule {}

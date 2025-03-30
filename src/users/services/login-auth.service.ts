@@ -4,20 +4,23 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
-import { User } from '../schemas/users.schema';
+import { AppErrorMessages, AppMessages } from '../../common/consts';
 import { UserStatus, UserTypeEnum } from '../../common/enums';
-import { AppMessages } from '../../common/consts';
+import { User } from '../schemas/users.schema';
+import { UserSessionManagementService } from '../../user-session/services/user-session-management.service';
 
 @Injectable()
 export class LoginAuthService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    private readonly userSessionService: UserSessionManagementService,
   ) {}
   public async loginUsingEmailPassword(
     email: string,
-    password: string,
+    enteredPassword: string,
     userType: UserTypeEnum[],
   ) {
     email = email.toLocaleLowerCase();
@@ -28,6 +31,22 @@ export class LoginAuthService {
     if (!user) throw new NotFoundException(AppMessages.USER_NOT_FOUND);
     if (user.status !== UserStatus.ACTIVE)
       throw new BadRequestException(AppMessages.USER_IS_NOT_ACTIVE);
+
+    const isPasswordMatched = await bcrypt.compare(
+      user.password,
+      enteredPassword,
+    );
+    if (!isPasswordMatched) {
+      throw new BadRequestException(AppErrorMessages.INCORRECT_PASSWORD);
+    }
+
+
+    const token = await this.userSessionService.generateNewTokenUsingUserData({
+      phone_code: user.phone.code,
+      mobilePhone: user.phone.number,
+      user_type: user.user_type,
+      userId: user._id,
+    });
     //TODO : compare password and throw error if wrong password
     // TODO : Return Profile Details , and access tokens and refresh token
   }
