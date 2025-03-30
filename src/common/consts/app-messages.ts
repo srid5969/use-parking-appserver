@@ -5,6 +5,7 @@ export const AppMessages = {
 export const AppErrorMessages = {
   TOKEN_INVALID: 'Invalid Token',
   INCORRECT_PASSWORD: 'Incorrect Password',
+  TOKEN_MISSING: 'Token is missing',
   USER_NOT_FOUND: 'User not found',
   USER_IS_NOT_ACTIVE: 'User is not active',
   USER_ALREADY_EXISTS: 'User already exists',
