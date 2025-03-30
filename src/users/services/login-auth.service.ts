@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { AppErrorMessages, AppMessages } from '../../common/consts';
 import { UserStatus, UserTypeEnum } from '../../common/enums';
@@ -23,7 +23,7 @@ export class LoginAuthService {
     enteredPassword: string,
     userType: UserTypeEnum[],
   ) {
-    email = email.toLocaleLowerCase();
+    email = email.toLowerCase();
     const user = await this.userModel.findOne({
       email,
       user_type: { $in: userType },
@@ -33,13 +33,13 @@ export class LoginAuthService {
       throw new BadRequestException(AppMessages.USER_IS_NOT_ACTIVE);
 
     const isPasswordMatched = await bcrypt.compare(
-      user.password,
       enteredPassword,
+      user.password,
     );
+
     if (!isPasswordMatched) {
       throw new BadRequestException(AppErrorMessages.INCORRECT_PASSWORD);
     }
-
 
     const token = await this.userSessionService.generateNewTokenUsingUserData({
       phone_code: user.phone.code,
@@ -47,7 +47,19 @@ export class LoginAuthService {
       user_type: user.user_type,
       userId: user._id,
     });
-    //TODO : compare password and throw error if wrong password
-    // TODO : Return Profile Details , and access tokens and refresh token
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const userProfileInfo = this.sanitization(user.toObject());
+
+    return {
+      ...token,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      profile_info: userProfileInfo,
+    };
+  }
+
+  sanitization(user: User): any {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userProfileInfo } = user;
+    return userProfileInfo;
   }
 }
