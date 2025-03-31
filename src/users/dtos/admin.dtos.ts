@@ -9,3 +9,12 @@ export class AdminLoginDTO {
   @ApiProperty()
   password: string;
 }
+
+export class AddNewAdminDTO {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+  @IsString()
+  @ApiProperty()
+  password: string;
+}

@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
 import { AppErrorMessages } from '../consts';
 import { EnvironmentConfigType } from '../../configs';
+import { CurrentUser } from '../decorators/current-users.decorator';
 
 @Injectable()
 export class CommonAuthGuard implements CanActivate {
@@ -16,8 +17,10 @@ export class CommonAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
-    const request: { headers: { authorization: string }; userMeta: unknown } =
-      context.switchToHttp().getRequest();
+    const request: {
+      headers: { authorization: string };
+      userMeta: CurrentUser;
+    } = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
 
     //JWT token basic check
@@ -33,7 +36,7 @@ export class CommonAuthGuard implements CanActivate {
         this.configService.getOrThrow<string>('accessTokenSecret');
       const decoded = jwt.verify(token, secretForJWT);
       // continue with authorization logic
-      request.userMeta = decoded;
+      request.userMeta = decoded as CurrentUser;
       return true;
     } catch (e) {
       throw new UnauthorizedException(AppErrorMessages.TOKEN_INVALID);

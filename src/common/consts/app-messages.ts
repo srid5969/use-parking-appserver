@@ -48,4 +48,9 @@ export const AppErrorMessages = {
   USER_NOT_FOUND_OR_ACTIVE_OR_VERIFIED: 'User not found or active or verified',
   USER_NOT_AUTHORIZED_OR_ACTIVE_OR_VERIFIED:
     'User not authorized or active or verified',
+  EMAIL_PHONE_ALREADY_EXISTS: 'Email or phone number already exists',
+  EMAIL_ALREADY_EXISTS: 'Email already exists',
+  PHONE_NUMBER_ALREADY_EXISTS: 'Phone number already exists',
+  USER_NOT_SUPER_ADMIN: 'User is not super admin',
+  USER_NOT_ADMIN: 'User is not admin',
 };

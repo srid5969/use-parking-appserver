@@ -43,4 +43,23 @@ export class AdminController {
     };
     return result;
   }
+
+  @Get('profile/:id')
+  async getAdminProfileById(@GetCurrentUser() currentUser: CurrentUser) {
+    const data = await this.adminProfileService.getAdminProfile(
+      currentUser.userId as string,
+    );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  // create an admin
+  @Post()
+  async addNewAdmin(
+    @Body() body: AdminLoginDTO,
+    @GetCurrentUser() currentUser: CurrentUser,
+  ) {}
 }
