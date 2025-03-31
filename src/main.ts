@@ -6,6 +6,16 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      stopAtFirstError: true,
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      always: true,
+      disableErrorMessages: false,
+    }),
+  );
   app.enableCors();
   app.enableVersioning();
   const configService = app.get(ConfigService);
@@ -32,14 +42,7 @@ async function bootstrap() {
     ],
   });
   await app.listen(port);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      stopAtFirstError: true,
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
+
   Logger.log(`Application running on port ${port}`);
 }
 bootstrap().catch((error) => {
