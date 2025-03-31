@@ -64,10 +64,9 @@ export class UserDto {
   @ApiProperty({ default: 'John Doe' })
   name?: string;
 
-  @IsOptional()
   @IsEmail()
   @ApiProperty({ default: 'example@yopmail.com' })
-  email?: string;
+  email: string;
 
   @IsOptional()
   @ValidateNested()
@@ -75,11 +74,10 @@ export class UserDto {
   @ApiProperty()
   phone?: PhoneDto;
 
-  @IsOptional()
   @IsString()
   @IsStrongPassword()
   @ApiProperty({ default: 'Password@1234' })
-  password?: string;
+  password: string;
 
   @IsOptional()
   @IsEnum(['male', 'female', 'others'])
