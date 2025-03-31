@@ -9,25 +9,29 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { FeatureManagementService } from '../services/features.service';
-import { UserService } from '../../users/services/users/users-common.service';
-import {
-  AddNewFeatureDTO,
-  UpdateFeatureDTO,
-} from '../dtos/feature-managements.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
 import { QueryParams } from '../../common/dtos/query-params.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { CommonAuthGuard } from '../../common/auth/auth-guard';
+import { UserService } from '../../users/services/users/users-common.service';
+import {
+  AddNewFeatureDTO,
+  UpdateFeatureDTO,
+} from '../dtos/feature-managements.dto';
+import { VehicleTypeManagementService } from '../services/vehicles-types.schema';
+import {
+  CreateNewVehicleTypeDto,
+  UpdateVehicleTypeDto,
+} from '../dtos/vehicle-type-management.dto';
 
 @Controller('vehicle-type')
 export class VehicleTypeManagementController {
   constructor(
-    private readonly featuresManagementService: FeatureManagementService,
+    private readonly vehicleTypeManagementService: VehicleTypeManagementService,
     private readonly userService: UserService,
   ) {}
 
@@ -36,10 +40,10 @@ export class VehicleTypeManagementController {
   @UseGuards(CommonAuthGuard)
   async createFeature(
     @GetCurrentUser() currentUser: CurrentUser,
-    @Body() body: AddNewFeatureDTO,
+    @Body() body: CreateNewVehicleTypeDto,
   ) {
     await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
-    const data = await this.featuresManagementService.createFeature(
+    const data = await this.vehicleTypeManagementService.createVehicleType(
       body,
       currentUser.userId,
     );
@@ -52,7 +56,8 @@ export class VehicleTypeManagementController {
 
   @Get()
   async getAllFeatures(@Query() query: QueryParams) {
-    const data = await this.featuresManagementService.getAllFeatures(query);
+    const data =
+      await this.vehicleTypeManagementService.getAllVehicleType(query);
     const result = {
       ...CommonSuccessResponseObject,
       data,
@@ -60,15 +65,16 @@ export class VehicleTypeManagementController {
     return result;
   }
 
-  @Get(':featureId')
+  @Get(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async getFeatureById(
-    @Param('featureId') featureId: string,
+    @Param('vehicleTypeId') vehicleTypeId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
     await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
-    const data = await this.featuresManagementService.getFeatureById(featureId);
+    const data =
+      await this.vehicleTypeManagementService.getVehicleTypeById(vehicleTypeId);
     const result = {
       ...CommonSuccessResponseObject,
       data,
@@ -76,17 +82,17 @@ export class VehicleTypeManagementController {
     return result;
   }
 
-  @Put(':featureId')
+  @Put(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async updateFeature(
-    @Param('featureId') featureId: string,
-    @Body() body: UpdateFeatureDTO,
+    @Param('vehicleTypeId') vehicleTypeId: string,
+    @Body() body: UpdateVehicleTypeDto,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
     await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
-    const data = await this.featuresManagementService.updateFeature(
-      featureId,
+    const data = await this.vehicleTypeManagementService.updateVehicleType(
+      vehicleTypeId,
       body,
       currentUser.userId,
     );
@@ -97,16 +103,16 @@ export class VehicleTypeManagementController {
     return result;
   }
 
-  @Delete(':featureId')
+  @Delete(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async deleteFeature(
-    @Param('featureId') featureId: string,
+    @Param('vehicleTypeId') vehicleTypeId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
     await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
-    const data = await this.featuresManagementService.deleteFeature(
-      featureId,
+    const data = await this.vehicleTypeManagementService.deleteVehicleTypeModel(
+      vehicleTypeId,
       currentUser.userId,
     );
     const result = {

@@ -21,6 +21,9 @@ export class VehicleType extends Document<Types.ObjectId> {
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: false })
   updatedBy?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  deletedBy?: Types.ObjectId;
 }
 
 export const VehicleTypeSchema = SchemaFactory.createForClass(VehicleType);

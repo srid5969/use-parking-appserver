@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { Status } from '../../common/enums';
 import { VehicleType } from '../schemas/vehicles-types.schema';
+import {
+  CreateNewVehicleTypeDto,
+  UpdateVehicleTypeDto,
+} from '../dtos/vehicle-type-management.dto';
 
 @Injectable()
 export class VehicleTypeManagementService {
@@ -56,15 +60,22 @@ export class VehicleTypeManagementService {
     return vehicleType;
   }
 
-  async createVehicleType(data: VehicleType) {
-    const vehicleType = await this.vehicleTypeModel.create(data);
+  async createVehicleType(data: CreateNewVehicleTypeDto, actionBy: string) {
+    const vehicleType = await this.vehicleTypeModel.create({
+      ...data,
+      createdBy: new Types.ObjectId(actionBy),
+    });
     return vehicleType;
   }
 
-  async updateVehicleType(vehicleTypeId: string, data: VehicleType) {
+  async updateVehicleType(
+    vehicleTypeId: string,
+    data: UpdateVehicleTypeDto,
+    actionBy: string,
+  ) {
     const vehicleType = await this.vehicleTypeModel.findByIdAndUpdate(
       vehicleTypeId,
-      data,
+      { ...data, updatedBy: new Types.ObjectId(actionBy) },
       {
         new: true,
       },
@@ -75,10 +86,10 @@ export class VehicleTypeManagementService {
     return vehicleType;
   }
 
-  async deleteVehicleTypeModel(vehicleTypeId: string) {
+  async deleteVehicleTypeModel(vehicleTypeId: string, actionBy: string) {
     const vehicleType = await this.vehicleTypeModel.findByIdAndUpdate(
       vehicleTypeId,
-      { status: Status.DELETED },
+      { status: Status.DELETED, deletedBy: new Types.ObjectId(actionBy) },
       { new: true },
     );
     if (!vehicleType) {
