@@ -63,6 +63,13 @@ export class UserService {
     user: Partial<User>,
     actionBy: Types.ObjectId,
   ) {
+    await this.checkUsersEmailAnPhoneUniqueOnUpdate(
+      new Types.ObjectId(userId),
+      {
+        email: user?.email,
+        phone: user?.phone,
+      },
+    );
     user.updatedBy = actionBy;
     const updatedUser = await this.userModel.findByIdAndUpdate(userId, user, {
       new: true,
@@ -169,5 +176,50 @@ export class UserService {
     )
       throw new BadRequestException(AppErrorMessages.USER_NOT_ADMIN);
     return user;
+  }
+  private async checkUsersEmailAnPhoneUniqueOnUpdate(
+    userId: Types.ObjectId,
+    validate: {
+      email?: string;
+      phone?: {
+        code: number;
+        number: number;
+      };
+    },
+  ) {
+    const findOptions = {
+      _id: { $nin: userId },
+    };
+    if ('email' in validate) {
+      findOptions['email'] = validate.email?.toLowerCase().trim();
+    }
+    if ('phone' in validate) {
+      findOptions['phone'] = validate.phone;
+    }
+    const check = await this.userModel.findOne(findOptions);
+    if (check) {
+      if (
+        'phone' in validate &&
+        'email' in validate &&
+        check.email === validate.email &&
+        check.phone.code === validate?.phone?.code &&
+        check.phone.number === validate?.phone?.number
+      ) {
+        throw new BadRequestException(
+          AppErrorMessages.EMAIL_PHONE_ALREADY_EXISTS,
+        );
+      } else if (
+        'phone' in validate &&
+        check.phone.code === validate?.phone?.code &&
+        check.phone.number === validate?.phone.number
+      ) {
+        throw new BadRequestException(
+          AppErrorMessages.PHONE_NUMBER_ALREADY_EXISTS,
+        );
+      } else if ('email' in validate && check.email === validate?.email) {
+        throw new BadRequestException(AppErrorMessages.EMAIL_ALREADY_EXISTS);
+      }
+    }
+    return false;
   }
 }
