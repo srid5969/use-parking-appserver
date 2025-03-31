@@ -24,7 +24,7 @@ import { QueryParams } from '../../common/dtos/query-params.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 
-@Controller('features-management')
+@Controller('features')
 export class FeaturesManagementController {
   constructor(
     private readonly featuresManagementService: FeatureManagementService,
