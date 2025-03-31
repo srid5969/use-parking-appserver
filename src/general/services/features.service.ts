@@ -4,6 +4,10 @@ import { Feature } from '../schemas/features.schema';
 import { Model } from 'mongoose';
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { Status } from '../../common/enums';
+import {
+  AddNewFeatureDTO,
+  UpdateFeatureDTO,
+} from '../dtos/feature-managements.dto';
 
 @Injectable()
 export class FeatureManagementService {
@@ -56,12 +60,12 @@ export class FeatureManagementService {
     return feature;
   }
 
-  async createFeature(data: Feature) {
+  async createFeature(data: AddNewFeatureDTO) {
     const feature = await this.featureModel.create(data);
     return feature;
   }
 
-  async updateFeature(featureId: string, data: Feature) {
+  async updateFeature(featureId: string, data: UpdateFeatureDTO) {
     const feature = await this.featureModel.findByIdAndUpdate(featureId, data, {
       new: true,
     });
