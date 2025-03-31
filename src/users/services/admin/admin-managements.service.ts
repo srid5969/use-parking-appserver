@@ -21,8 +21,7 @@ export class AdminManagementService {
     admin.createdBy =
       typeof creator === 'string' ? new Types.ObjectId(creator) : creator;
     admin.status = UserStatus.ACTIVE;
-    await this.userService.checkIfEmailOrPhoneAlreadyExists(admin.email, admin.phone);
-    const createdAdmin = await admin.save();
+    const createdAdmin = this.userService.createUser(admin);
     return createdAdmin;
   }
 

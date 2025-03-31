@@ -51,6 +51,7 @@ export class UserService {
   }
 
   async createUser(user: User) {
+    await this.checkIfEmailOrPhoneAlreadyExists(user.email, user.phone);
     const newUser = await this.userModel.create(user);
     return newUser;
   }
