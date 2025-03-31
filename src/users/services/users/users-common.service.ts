@@ -52,6 +52,8 @@ export class UserService {
   }
 
   async createUser(user: User) {
+    user.email = user.email.toLowerCase().trim();
+    user.password = user.password.trim();
     await this.checkIfEmailOrPhoneAlreadyExists(user.email, user.phone);
     user.password = await bcrypt.hash(user.password, 12);
     const newUser = await this.userModel.create(user);

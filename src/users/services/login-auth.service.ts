@@ -23,7 +23,8 @@ export class LoginAuthService {
     enteredPassword: string,
     userType: UserTypeEnum[],
   ) {
-    email = email.toLowerCase();
+    email = email.toLowerCase().trim();
+    enteredPassword = enteredPassword.trim();
     const user = await this.userModel.findOne({
       email,
       user_type: { $in: userType },
