@@ -25,7 +25,7 @@ export class AddNewAdminDTO extends UserDto {
   @IsNotEmpty()
   @IsNotIn([UserTypeEnum.SUPER_ADMIN])
   @IsIn([UserTypeEnum.ADMIN])
-  @ApiProperty()
+  @ApiProperty({ default: UserTypeEnum.ADMIN })
   @IsOptional()
   user_type?: UserTypeEnum;
 }
@@ -35,7 +35,7 @@ export class UpdateAdminDTO extends UserDto {
   @IsNotEmpty()
   @IsNotIn([UserTypeEnum.SUPER_ADMIN])
   @IsIn([UserTypeEnum.ADMIN])
-  @ApiProperty()
+  @ApiProperty({ default: UserTypeEnum.ADMIN })
   @IsOptional()
   user_type?: UserTypeEnum;
 }
