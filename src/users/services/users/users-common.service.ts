@@ -80,7 +80,12 @@ export class UserService {
     if (!updatedUser) {
       throw new BadRequestException(AppErrorMessages.USER_NOT_FOUND);
     }
-    return updatedUser;
+    const result = updatedUser.toJSON();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if ('password' in result) delete (result as any).password;
+
+    return result;
   }
 
   async deleteUser(userId: string) {
@@ -90,7 +95,6 @@ export class UserService {
     if (!deletedUser) {
       throw new BadRequestException(AppErrorMessages.USER_NOT_FOUND);
     }
-    return deletedUser;
   }
 
   async getUserById(userId: string) {
