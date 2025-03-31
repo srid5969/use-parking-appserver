@@ -11,6 +11,12 @@ export class Setting extends Document<Types.ObjectId> {
 
   @Prop()
   description?: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  createdBy?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  updatedBy?: Types.ObjectId;
 }
 
 export const SettingSchema = SchemaFactory.createForClass(Setting);

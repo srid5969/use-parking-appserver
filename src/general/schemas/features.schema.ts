@@ -12,6 +12,15 @@ export class Feature extends Document<Types.ObjectId> {
 
   @Prop({ default: Status.ACTIVE })
   status?: Status;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  createdBy?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  updatedBy?: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
+  deletedBy?: Types.ObjectId;
 }
 
 export const FeatureSchema = SchemaFactory.createForClass(Feature);

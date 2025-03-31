@@ -8,12 +8,14 @@ export const GetCurrentUser = createParamDecorator(
     const request = ctx
       .switchToHttp()
       .getRequest<Request & { userMeta: CurrentUser }>();
+    console.log('request.userMeta', request.userMeta);
+
     return request.userMeta;
   },
 );
 
 export class CurrentUser {
-  userId: Types.ObjectId | string;
+  userId: string;
   user_type: UserTypeEnum;
   mobilePhone: number;
   phone_code: number;

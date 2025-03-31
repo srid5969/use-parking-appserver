@@ -38,10 +38,11 @@ export class FeaturesManagementController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Body() body: AddNewFeatureDTO,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.featuresManagementService.createFeature(
+      body,
+      currentUser.userId,
     );
-    const data = await this.featuresManagementService.createFeature(body);
     const result = {
       ...CommonSuccessResponseObject,
       data,
@@ -66,9 +67,7 @@ export class FeaturesManagementController {
     @Param('featureId') featureId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.featuresManagementService.getFeatureById(featureId);
     const result = {
       ...CommonSuccessResponseObject,
@@ -85,12 +84,11 @@ export class FeaturesManagementController {
     @Body() body: UpdateFeatureDTO,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.featuresManagementService.updateFeature(
       featureId,
       body,
+      currentUser.userId,
     );
     const result = {
       ...CommonSuccessResponseObject,
@@ -106,10 +104,11 @@ export class FeaturesManagementController {
     @Param('featureId') featureId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.featuresManagementService.deleteFeature(
+      featureId,
+      currentUser.userId,
     );
-    const data = await this.featuresManagementService.deleteFeature(featureId);
     const result = {
       ...CommonSuccessResponseObject,
       data,

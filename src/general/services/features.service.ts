@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Feature } from '../schemas/features.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { Status } from '../../common/enums';
 import {
@@ -60,25 +60,36 @@ export class FeatureManagementService {
     return feature;
   }
 
-  async createFeature(data: AddNewFeatureDTO) {
-    const feature = await this.featureModel.create(data);
+  async createFeature(data: AddNewFeatureDTO, actionBy: string) {
+    const feature = await this.featureModel.create({
+      ...data,
+      createdBy: new Types.ObjectId(actionBy),
+    });
     return feature;
   }
 
-  async updateFeature(featureId: string, data: UpdateFeatureDTO) {
-    const feature = await this.featureModel.findByIdAndUpdate(featureId, data, {
-      new: true,
-    });
+  async updateFeature(
+    featureId: string,
+    data: UpdateFeatureDTO,
+    actionBy: string,
+  ) {
+    const feature = await this.featureModel.findByIdAndUpdate(
+      featureId,
+      { ...data, updatedBy: new Types.ObjectId(actionBy) },
+      {
+        new: true,
+      },
+    );
     if (!feature) {
       throw new NotFoundException();
     }
     return feature;
   }
 
-  async deleteFeature(featureId: string) {
+  async deleteFeature(featureId: string, actionBy: string) {
     const feature = await this.featureModel.findByIdAndUpdate(
       featureId,
-      { status: Status.DELETED },
+      { status: Status.DELETED, deletedBy: new Types.ObjectId(actionBy) },
       { new: true },
     );
     if (!feature) {
