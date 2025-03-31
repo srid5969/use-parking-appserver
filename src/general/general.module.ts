@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from '../users/schemas/users.schema';
+import { UserService } from '../users/services/users/users-common.service';
 import { FeaturesManagementController } from './conntroller/features-management.controller';
 import { Feature, FeatureSchema } from './schemas/features.schema';
 import { Setting, SettingSchema } from './schemas/settings.schema';
@@ -16,9 +18,14 @@ import { VehicleTypeManagementService } from './services/vehicles-types.schema';
       { name: Feature.name, schema: FeatureSchema },
       { name: Setting.name, schema: SettingSchema },
       { name: VehicleType.name, schema: VehicleTypeSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
-  providers: [VehicleTypeManagementService, FeatureManagementService],
+  providers: [
+    VehicleTypeManagementService,
+    FeatureManagementService,
+    UserService,
+  ],
   controllers: [FeaturesManagementController],
 })
 export class GeneralModule {}
