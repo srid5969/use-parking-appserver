@@ -11,6 +11,7 @@ import {
 } from './schemas/vehicles-types.schema';
 import { FeatureManagementService } from './services/features.service';
 import { VehicleTypeManagementService } from './services/vehicles-types.schema';
+import { VehicleTypeManagementController } from './conntroller/vehicle-type-maangement.controller';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { VehicleTypeManagementService } from './services/vehicles-types.schema';
     FeatureManagementService,
     UserService,
   ],
-  controllers: [FeaturesManagementController],
+  controllers: [FeaturesManagementController, VehicleTypeManagementController],
 })
 export class GeneralModule {}

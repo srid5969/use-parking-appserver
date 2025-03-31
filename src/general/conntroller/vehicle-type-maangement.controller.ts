@@ -19,14 +19,10 @@ import {
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { UserService } from '../../users/services/users/users-common.service';
 import {
-  AddNewFeatureDTO,
-  UpdateFeatureDTO,
-} from '../dtos/feature-managements.dto';
-import { VehicleTypeManagementService } from '../services/vehicles-types.schema';
-import {
   CreateNewVehicleTypeDto,
   UpdateVehicleTypeDto,
 } from '../dtos/vehicle-type-management.dto';
+import { VehicleTypeManagementService } from '../services/vehicles-types.schema';
 
 @Controller('vehicle-type')
 export class VehicleTypeManagementController {
@@ -38,7 +34,7 @@ export class VehicleTypeManagementController {
   @Post()
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
-  async createFeature(
+  async createVehicleType(
     @GetCurrentUser() currentUser: CurrentUser,
     @Body() body: CreateNewVehicleTypeDto,
   ) {
@@ -55,7 +51,7 @@ export class VehicleTypeManagementController {
   }
 
   @Get()
-  async getAllFeatures(@Query() query: QueryParams) {
+  async getAllVehicleTypes(@Query() query: QueryParams) {
     const data =
       await this.vehicleTypeManagementService.getAllVehicleType(query);
     const result = {
@@ -68,7 +64,7 @@ export class VehicleTypeManagementController {
   @Get(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
-  async getFeatureById(
+  async getVehicleTypeById(
     @Param('vehicleTypeId') vehicleTypeId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
@@ -85,7 +81,7 @@ export class VehicleTypeManagementController {
   @Put(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
-  async updateFeature(
+  async updateVehicleType(
     @Param('vehicleTypeId') vehicleTypeId: string,
     @Body() body: UpdateVehicleTypeDto,
     @GetCurrentUser() currentUser: CurrentUser,
@@ -106,7 +102,7 @@ export class VehicleTypeManagementController {
   @Delete(':vehicleTypeId')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
-  async deleteFeature(
+  async deleteVehicleType(
     @Param('vehicleTypeId') vehicleTypeId: string,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
