@@ -140,4 +140,24 @@ export class AdminController {
     };
     return result;
   }
+
+
+  // get admin details by id
+  @Get(':id')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAdminById(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Param('id') id: string,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(
+      currentUser.userId as string,
+    );
+    const data = await this.adminManagementService.getAdminById(id);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
 }
