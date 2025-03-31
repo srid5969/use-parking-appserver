@@ -55,7 +55,7 @@ export class AdminController {
   @UseGuards(CommonAuthGuard)
   async getAdminProfile(@GetCurrentUser() currentUser: CurrentUser) {
     const data = await this.adminProfileService.getAdminProfile(
-      currentUser.userId as string,
+      currentUser.userId,
     );
     const result = {
       ...CommonSuccessResponseObject,
@@ -69,7 +69,7 @@ export class AdminController {
   @UseGuards(CommonAuthGuard)
   async getAdminProfileById(@GetCurrentUser() currentUser: CurrentUser) {
     const data = await this.adminProfileService.getAdminProfile(
-      currentUser.userId as string,
+      currentUser.userId,
     );
     const result = {
       ...CommonSuccessResponseObject,
@@ -86,12 +86,10 @@ export class AdminController {
     @Body() body: AddNewAdminDTO,
     @GetCurrentUser() currentUser: CurrentUser,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.adminManagementService.createNewAdmin(
       body,
-      currentUser.userId as string,
+      currentUser.userId,
     );
     const result = {
       ...CommonSuccessResponseObject,
@@ -109,13 +107,11 @@ export class AdminController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Param('id') id: string,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.adminManagementService.updateAdmin(
       id,
       body as unknown as User,
-      currentUser.userId as string,
+      currentUser.userId,
     );
     const result = {
       ...CommonSuccessResponseObject,
@@ -133,9 +129,7 @@ export class AdminController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Query() query: QueryParams,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.adminManagementService.getAllAdmins(query);
     const result = {
       ...CommonSuccessResponseObject,
@@ -152,9 +146,7 @@ export class AdminController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Param('id') id: string,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.adminManagementService.getAdminById(id);
     const result = {
       ...CommonSuccessResponseObject,
@@ -170,9 +162,7 @@ export class AdminController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Param('id') id: string,
   ) {
-    await this.userService.validateIfUserIsSuperAdmin(
-      currentUser.userId as string,
-    );
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
     const data = await this.adminManagementService.deleteAdmin(id);
     const result = {
       ...CommonSuccessResponseObject,
