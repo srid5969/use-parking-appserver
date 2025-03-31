@@ -7,7 +7,7 @@ export class VehicleDetails {
   @Prop({ required: true })
   vehicle_type: string;
 }
-@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+@Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class Booking extends Document<Types.ObjectId> {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   customer_id: Types.ObjectId;

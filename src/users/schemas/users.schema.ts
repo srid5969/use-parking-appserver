@@ -35,7 +35,7 @@ class Address {
   location?: [number, number];
 }
 
-@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+@Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class User extends Document<Types.ObjectId> {
   @Prop({ required: true })
   name: string;

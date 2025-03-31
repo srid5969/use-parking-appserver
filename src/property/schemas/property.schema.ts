@@ -11,7 +11,7 @@ export class PropertyAddress {
   @Prop({ required: true })
   location: [number, number];
 }
-@Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+@Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class Property extends Document<Types.ObjectId> {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner_id: Types.ObjectId;
