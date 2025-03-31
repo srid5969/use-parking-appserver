@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
@@ -6,11 +14,16 @@ import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
-import { AddNewAdminDTO, AdminLoginDTO } from '../dtos/admin.dtos';
+import {
+  AddNewAdminDTO,
+  AdminLoginDTO,
+  UpdateAdminDTO,
+} from '../dtos/admin.dtos';
 import { AdminLoginService } from '../services/admin/admin-login.service';
 import { AdminProfileService } from '../services/admin/admin-profile.service';
 import { AdminManagementService } from '../services/admin/admin-managements.service';
 import { UserService } from '../services/users/users-common.service';
+import { User } from '../schemas/users.schema';
 
 @Controller('admin')
 export class AdminController {
@@ -87,12 +100,14 @@ export class AdminController {
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async updateAdminProfile(
-    @Body() body: Partial<AddNewAdminDTO>,
+    @Body() body: Partial<UpdateAdminDTO>,
     @GetCurrentUser() currentUser: CurrentUser,
+    @Param('id') id: string,
   ) {
-    const data = await this.adminManagementService.getAdminById(
+    const data = await this.adminManagementService.updateAdmin(
+      id,
+      body as unknown as User,
       currentUser.userId as string,
-      body,
     );
     const result = {
       ...CommonSuccessResponseObject,

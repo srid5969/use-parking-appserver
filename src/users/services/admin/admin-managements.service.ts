@@ -30,9 +30,13 @@ export class AdminManagementService {
   async updateAdmin(
     adminId: string,
     adminData: Partial<User>,
-    actionUser: Types.ObjectId,
+    actionBy: string,
   ) {
-    const updatedAdmin = await this.userService.updateUser(adminId, adminData);
+    const updatedAdmin = await this.userService.updateUser(
+      adminId,
+      adminData,
+      typeof actionBy === 'string' ? new Types.ObjectId(actionBy) : actionBy,
+    );
     return updatedAdmin;
   }
   // delete admin

@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
+  IsIn,
   IsNotEmpty,
   IsNotIn,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { UserDto } from './users.dto';
@@ -21,7 +23,19 @@ export class AdminLoginDTO {
 export class AddNewAdminDTO extends UserDto {
   @IsEnum(UserTypeEnum)
   @IsNotEmpty()
-  @IsNotIn([UserTypeEnum.ADMIN])
+  @IsNotIn([UserTypeEnum.SUPER_ADMIN])
+  @IsIn([UserTypeEnum.ADMIN])
   @ApiProperty()
+  @IsOptional()
+  user_type?: UserTypeEnum;
+}
+
+export class UpdateAdminDTO extends UserDto {
+  @IsEnum(UserTypeEnum)
+  @IsNotEmpty()
+  @IsNotIn([UserTypeEnum.SUPER_ADMIN])
+  @IsIn([UserTypeEnum.ADMIN])
+  @ApiProperty()
+  @IsOptional()
   user_type?: UserTypeEnum;
 }
