@@ -10,8 +10,8 @@ export class Feature extends Document<Types.ObjectId> {
   @Prop()
   description?: string;
 
-  @Prop()
-  status: Status;
+  @Prop({ default: Status.ACTIVE })
+  status?: Status;
 }
 
 export const FeatureSchema = SchemaFactory.createForClass(Feature);

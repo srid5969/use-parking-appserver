@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Status } from '../../common/enums';
 
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class VehicleType extends Document<Types.ObjectId> {
@@ -11,6 +12,9 @@ export class VehicleType extends Document<Types.ObjectId> {
 
   @Prop({ required: true })
   max_capacity: number;
+
+  @Prop({ default: Status.ACTIVE })
+  status?: Status;
 }
 
 export const VehicleTypeSchema = SchemaFactory.createForClass(VehicleType);
