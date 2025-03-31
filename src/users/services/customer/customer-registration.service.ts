@@ -15,10 +15,11 @@ export class CustomerRegistrationService {
   async registerCustomer(customer: CustomerRegistrationDTO) {
     customer.user_type = UserTypeEnum.CUSTOMER;
     customer.status = UserStatus.ACTIVE;
+    const passwordForLogin = customer.password;
     await this.userService.createUser(customer as User);
     const loginUser = await this.loginService.loginUsingEmailPassword(
       customer.email,
-      customer.password,
+      passwordForLogin,
     );
     return loginUser;
   }

@@ -12,13 +12,14 @@ export class PropertyOwnerRegistrationService {
     private readonly loginService: PropertyOwnerLoginService,
   ) {}
 
-  async registerCustomer(customer: PropertyOwnerRegistrationDTO) {
-    customer.user_type = UserTypeEnum.PROPERTY_OWNER;
-    customer.status = UserStatus.ACTIVE;
-    await this.userService.createUser(customer as User);
+  async registerCustomer(propertyOwner: PropertyOwnerRegistrationDTO) {
+    propertyOwner.user_type = UserTypeEnum.PROPERTY_OWNER;
+    propertyOwner.status = UserStatus.ACTIVE;
+    const passwordForLogin = propertyOwner.password;
+    await this.userService.createUser(propertyOwner as User);
     const loginUser = await this.loginService.loginUsingEmailPassword(
-      customer.email,
-      customer.password,
+      propertyOwner.email,
+      passwordForLogin,
     );
     return loginUser;
   }
