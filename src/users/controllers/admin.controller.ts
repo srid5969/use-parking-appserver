@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -143,7 +144,6 @@ export class AdminController {
     return result;
   }
 
-
   // get admin details by id
   @Get('/profile/:id')
   @ApiBearerAuth('JWT')
@@ -156,6 +156,24 @@ export class AdminController {
       currentUser.userId as string,
     );
     const data = await this.adminManagementService.getAdminById(id);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Delete('/profile/:id')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async deleteAdminById(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Param('id') id: string,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(
+      currentUser.userId as string,
+    );
+    const data = await this.adminManagementService.deleteAdmin(id);
     const result = {
       ...CommonSuccessResponseObject,
       data,
