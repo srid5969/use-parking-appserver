@@ -100,7 +100,7 @@ export class AdminController {
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async updateAdminProfile(
-    @Body() body: Partial<UpdateAdminDTO>,
+    @Body() body: UpdateAdminDTO,
     @GetCurrentUser() currentUser: CurrentUser,
     @Param('id') id: string,
   ) {
