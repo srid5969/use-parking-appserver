@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
   Injectable,
@@ -53,6 +54,7 @@ export class UserService {
   async createUser(user: User) {
     await this.checkIfEmailOrPhoneAlreadyExists(user.email, user.phone);
     const newUser = await this.userModel.create(user);
+    user.password = await bcrypt.hash(user.password, 12);
     return newUser;
   }
 
