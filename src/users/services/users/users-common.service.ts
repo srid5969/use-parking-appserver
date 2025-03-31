@@ -53,9 +53,12 @@ export class UserService {
 
   async createUser(user: User) {
     await this.checkIfEmailOrPhoneAlreadyExists(user.email, user.phone);
-    const newUser = await this.userModel.create(user);
     user.password = await bcrypt.hash(user.password, 12);
-    return newUser;
+    const newUser = await this.userModel.create(user);
+    const result = newUser.toJSON();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if ('password' in result) delete (result as any).password;
+    return result;
   }
 
   async updateUser(
