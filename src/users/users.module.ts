@@ -14,6 +14,8 @@ import { LoginAuthService } from './services/login-auth.service';
 import { PropertyOwnerLoginService } from './services/property-owner/property-owner-login.service';
 import { PropertyOwnerRegistrationService } from './services/property-owner/property-owner-registration.service';
 import { UserService } from './services/users/users-common.service';
+import { PropertyOwnerProfileService } from './services/property-owner/property-owner-profile.service';
+import { CustomerProfileService } from './services/customer/customer-profile.service';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { UserService } from './services/users/users-common.service';
     CustomerLoginService,
     CustomerRegistrationService,
     PropertyOwnerRegistrationService,
+    PropertyOwnerProfileService,
+    CustomerProfileService,
   ],
   controllers: [AdminController, PropertyOwnerController, CustomersController],
 })

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../users/users-common.service';
 
 @Injectable()
-export class AdminProfileService {
+export class PropertyOwnerProfileService {
   constructor(private readonly userService: UserService) {}
-  async getAdminProfile(userId: string) {
+  async getProfileDataByUserId(userId: string) {
     const data=await this.userService.getUserById(userId);
     return data;
   }

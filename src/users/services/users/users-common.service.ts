@@ -100,7 +100,7 @@ export class UserService {
   }
 
   async getUserById(userId: string) {
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(userId).select('-password -__v');
     if (!user) {
       throw new BadRequestException(AppErrorMessages.USER_NOT_FOUND);
     }
