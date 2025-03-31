@@ -1,14 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CustomerLoginDTO } from '../dtos/customers.dtos';
-import { CustomerLoginService } from '../services/customer/customer-login.service';
 import { CommonSuccessResponseObject } from '../../common/consts';
+import { PropertyOwnerLoginDTO } from '../dtos/property-owner.dtos';
+import { PropertyOwnerLoginService } from '../services/property-owner/property-owner-login.service';
 
-@Controller('customers')
-export class CustomersController {
-  constructor(private readonly loginService: CustomerLoginService) {}
-
+@Controller('property-owner')
+export class PropertyOwnerController {
+  constructor(private readonly loginService: PropertyOwnerLoginService) {}
   @Post('login')
-  async loginController(@Body() body: CustomerLoginDTO) {
+  async loginController(@Body() body: PropertyOwnerLoginDTO) {
     const { email, password } = body;
     const data = await this.loginService.loginUsingEmailPassword(
       email,
