@@ -8,6 +8,10 @@ import { AdminManagementService } from './services/admin/admin-managements.servi
 import { AdminProfileService } from './services/admin/admin-profile.service';
 import { LoginAuthService } from './services/login-auth.service';
 import { UserService } from './services/users/users-common.service';
+import { PropertyOwnerController } from './controllers/property_owner.controller';
+import { CustomersController } from './controllers/customers.controller';
+import { PropertyOwnerLoginService } from './services/property-owner/property-owner-login.service';
+import { CustomerLoginService } from './services/customer/customer-login.service';
 
 @Module({
   imports: [
@@ -20,7 +24,9 @@ import { UserService } from './services/users/users-common.service';
     AdminProfileService,
     AdminManagementService,
     UserService,
+    PropertyOwnerLoginService,
+    CustomerLoginService,
   ],
-  controllers: [AdminController],
+  controllers: [AdminController, PropertyOwnerController, CustomersController],
 })
 export class UsersModule {}
