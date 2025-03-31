@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -14,16 +15,17 @@ import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
+import { QueryParams } from '../../common/dtos/query-params.dto';
 import {
   AddNewAdminDTO,
   AdminLoginDTO,
   UpdateAdminDTO,
 } from '../dtos/admin.dtos';
-import { AdminLoginService } from '../services/admin/admin-login.service';
-import { AdminProfileService } from '../services/admin/admin-profile.service';
-import { AdminManagementService } from '../services/admin/admin-managements.service';
-import { UserService } from '../services/users/users-common.service';
 import { User } from '../schemas/users.schema';
+import { AdminLoginService } from '../services/admin/admin-login.service';
+import { AdminManagementService } from '../services/admin/admin-managements.service';
+import { AdminProfileService } from '../services/admin/admin-profile.service';
+import { UserService } from '../services/users/users-common.service';
 
 @Controller('admin')
 export class AdminController {
@@ -104,11 +106,34 @@ export class AdminController {
     @GetCurrentUser() currentUser: CurrentUser,
     @Param('id') id: string,
   ) {
+    await this.userService.validateIfUserIsSuperAdmin(
+      currentUser.userId as string,
+    );
     const data = await this.adminManagementService.updateAdmin(
       id,
       body as unknown as User,
       currentUser.userId as string,
     );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  // list all admins
+
+  @Get()
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAllAdminsRecordController(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Query() query: QueryParams,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(
+      currentUser.userId as string,
+    );
+    const data = await this.adminManagementService.getAllAdmins(query);
     const result = {
       ...CommonSuccessResponseObject,
       data,

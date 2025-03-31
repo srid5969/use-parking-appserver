@@ -101,14 +101,14 @@ export class UserService {
   async getUsersListByUserType(userType: UserTypeEnum[], params: QueryParams) {
     const page = params.page || 1;
     const limit = params.limit || 24;
-    const sort = params.sort || 'created_at|DESC';
+    const sort = params.sort || 'createdAt|DESC';
     const filters = params.filters || '';
     const textSearch = params.textSearch || '';
     const skip = page * limit - limit;
     const [sortField, sortOrder] = sort.split('|');
     const filterAry = filters.split(',');
     const queryObj = {
-      userType: { $in: userType },
+      user_type: { $in: userType },
       status: { $ne: UserStatus.DELETED },
     };
     for (const element of filterAry) {
