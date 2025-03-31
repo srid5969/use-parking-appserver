@@ -63,7 +63,9 @@ export class AdminController {
     return result;
   }
 
-  @Get('profile/:id')
+  @Get('/profile/:id')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
   async getAdminProfileById(@GetCurrentUser() currentUser: CurrentUser) {
     const data = await this.adminProfileService.getAdminProfile(
       currentUser.userId as string,
@@ -143,7 +145,7 @@ export class AdminController {
 
 
   // get admin details by id
-  @Get(':id')
+  @Get('/profile/:id')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async getAdminById(
