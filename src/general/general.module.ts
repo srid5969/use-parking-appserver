@@ -6,6 +6,8 @@ import {
   VehicleType,
   VehicleTypeSchema,
 } from './schemas/vehicles-types.schema';
+import { FeatureManagementService } from './services/features.service';
+import { VehicleTypeManagementService } from './services/vehicles-types.schema';
 
 @Module({
   imports: [
@@ -15,5 +17,6 @@ import {
       { name: VehicleType.name, schema: VehicleTypeSchema },
     ]),
   ],
+  providers: [VehicleTypeManagementService, FeatureManagementService],
 })
 export class GeneralModule {}
