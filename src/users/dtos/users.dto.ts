@@ -7,6 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsStrongPassword,
   ValidateNested,
 } from 'class-validator';
 import { AddressType, UserStatus, UserTypeEnum } from '../../common/enums';
@@ -62,6 +63,7 @@ export class UserDto {
 
   @IsOptional()
   @IsString()
+  @IsStrongPassword()
   password?: string;
 
   @IsOptional()

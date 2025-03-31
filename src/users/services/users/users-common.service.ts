@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from '../../schemas/users.schema';
 import { AppErrorMessages } from '../../../common/consts';
 import { UserStatus, UserTypeEnum } from '../../../common/enums';
@@ -55,7 +55,12 @@ export class UserService {
     return newUser;
   }
 
-  async updateUser(userId: string, user: Partial<User>) {
+  async updateUser(
+    userId: string,
+    user: Partial<User>,
+    actionBy: Types.ObjectId,
+  ) {
+    user.updatedBy = actionBy;
     const updatedUser = await this.userModel.findByIdAndUpdate(userId, user, {
       new: true,
     });

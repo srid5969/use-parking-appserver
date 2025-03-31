@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from '../../schemas/users.schema';
 import { UserService } from '../users/users-common.service';
 import { QueryParams } from './../../../common/dtos/query-params.dto';
-import { UserTypeEnum } from '../../../common/enums';
+import { UserStatus, UserTypeEnum } from '../../../common/enums';
+import { AddNewAdminDTO } from '../../dtos/admin.dtos';
 
 @Injectable() // for only super  admin
 export class AdminManagementService {
@@ -14,14 +15,23 @@ export class AdminManagementService {
   ) {}
 
   // create admin
-  async createNewAdmin(adminData: User) {
-    const admin = await this.userService.createUser(adminData);
-    return admin;
+  async createNewAdmin(adminData: AddNewAdminDTO, creator: string) {
+    const admin = new this.userModel(adminData);
+    admin.user_type = UserTypeEnum.ADMIN;
+    admin.createdBy =
+      typeof creator === 'string' ? new Types.ObjectId(creator) : creator;
+    admin.status = UserStatus.ACTIVE;
+    const createdAdmin = await admin.save();
+    return createdAdmin;
   }
 
   // update admin
 
-  async updateAdmin(adminId: string, adminData: Partial<User>) {
+  async updateAdmin(
+    adminId: string,
+    adminData: Partial<User>,
+    actionUser: Types.ObjectId,
+  ) {
     const updatedAdmin = await this.userService.updateUser(adminId, adminData);
     return updatedAdmin;
   }

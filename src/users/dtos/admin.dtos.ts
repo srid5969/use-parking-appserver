@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNotIn,
+  IsString,
+} from 'class-validator';
+import { UserDto } from './users.dto';
+import { UserTypeEnum } from '../../common/enums';
 
 export class AdminLoginDTO {
   @ApiProperty()
@@ -10,11 +18,10 @@ export class AdminLoginDTO {
   password: string;
 }
 
-export class AddNewAdminDTO {
+export class AddNewAdminDTO extends UserDto {
+  @IsEnum(UserTypeEnum)
+  @IsNotEmpty()
+  @IsNotIn([UserTypeEnum.ADMIN])
   @ApiProperty()
-  @IsEmail()
-  email: string;
-  @IsString()
-  @ApiProperty()
-  password: string;
+  user_type?: UserTypeEnum;
 }
