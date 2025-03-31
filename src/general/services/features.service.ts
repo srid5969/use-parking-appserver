@@ -48,7 +48,6 @@ export class FeatureManagementService {
     return { data, totalCount };
   }
 
-
   async getFeatureById(featureId: string) {
     const feature = await this.featureModel.findById(featureId);
     if (!feature) {
