@@ -5,7 +5,7 @@ import { UserService } from '../users/users-common.service';
 export class CustomerProfileService {
   constructor(private readonly userService: UserService) {}
   async getProfileDataByUserId(userId: string) {
-    const data=await this.userService.getUserById(userId);
+    const data = await this.userService.getUserById(userId);
     return data;
   }
 }

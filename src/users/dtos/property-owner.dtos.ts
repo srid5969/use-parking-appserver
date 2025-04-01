@@ -30,8 +30,6 @@ export class PropertyOwnerRegistrationDTO extends UserDto {
   user_type?: UserTypeEnum;
 }
 
-
-
 export class PropertyOwnerOtpRegistrationDTO {
   @ValidateNested()
   @Type(() => PhoneDto)
