@@ -43,6 +43,7 @@ export class CustomerRegistrationService {
     return await this.otpRegistrationService.verifyOTPAndRegisterUser(
       phone,
       otp,
+      UserTypeEnum.CUSTOMER,
     );
   }
 }

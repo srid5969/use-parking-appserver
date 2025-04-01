@@ -45,6 +45,7 @@ export class OTPRegistrationService {
   async verifyOTPAndRegisterUser(
     phone: { code: number; number: number },
     otp: string,
+    user_type: UserTypeEnum,
   ) {
     const user = await this.userService.findUserByPhone(phone);
 
@@ -63,7 +64,7 @@ export class OTPRegistrationService {
       },
       {
         $set: {
-          user_type: UserTypeEnum.CUSTOMER,
+          user_type: user_type,
           phone_verified: true,
           status: UserStatus.ACTIVE,
         },
