@@ -1,7 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Types } from 'mongoose';
-import { UserTypeEnum } from '../enums';
 import { Request } from 'express';
+import { UserTypeEnum } from '../enums';
 
 export const GetCurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {

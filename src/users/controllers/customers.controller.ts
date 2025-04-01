@@ -6,23 +6,22 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import {
-  CustomerLoginDTO,
-  CustomerOtpRegistrationDTO,
-  CustomerOtpRegistrationVerification,
-  CustomerRegistrationDTO,
-} from '../dtos/customers.dtos';
-import { CustomerLoginService } from '../services/customer/customer-login.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
-import { CustomerRegistrationService } from '../services/customer/customer-registration.service';
 import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
-import { CommonAuthGuard } from '../../common/auth/auth-guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { CustomerProfileService } from '../services/customer/customer-profile.service';
 import { UserTypeEnum } from '../../common/enums';
+import {
+  CustomerLoginDTO,
+  CustomerOtpRegistrationDTO,
+  CustomerOtpRegistrationVerification
+} from '../dtos/customers.dtos';
+import { CustomerLoginService } from '../services/customer/customer-login.service';
+import { CustomerProfileService } from '../services/customer/customer-profile.service';
+import { CustomerRegistrationService } from '../services/customer/customer-registration.service';
 
 @Controller('customers')
 export class CustomersController {
