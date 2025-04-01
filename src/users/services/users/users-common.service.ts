@@ -1,15 +1,16 @@
-import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
-import { User } from '../../schemas/users.schema';
+import * as omit from 'lodash/omit';
 import { AppErrorMessages } from '../../../common/consts';
-import { UserStatus, UserTypeEnum } from '../../../common/enums';
 import { QueryParams } from '../../../common/dtos/query-params.dto';
+import { UserStatus, UserTypeEnum } from '../../../common/enums';
+import { User } from '../../schemas/users.schema';
 
 @Injectable()
 export class UserService {
@@ -17,19 +18,37 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async checkIfEmailOrPhoneAlreadyExists(
-    email: string,
-    phone: {
+  async throwErrorIfEmailOrPhoneAlreadyExists({
+    email,
+    phone,
+  }: {
+    email?: string;
+    phone?: {
       code: number;
       number: number;
-    },
-  ) {
-    email = email.toLowerCase().trim();
+    };
+  }) {
+    if (email) email = email.toLowerCase().trim();
+    const findOptions: {
+      email?: string;
+      phone?: {
+        code: number;
+        number: number;
+      };
+    }[] = [];
+    if (email) findOptions.push({ email });
+    if (phone)
+      findOptions.push({ phone: { code: phone.code, number: phone.number } });
+
     const check = await this.userModel.findOne({
-      $or: [{ email }, { phone: { code: phone.code, number: phone.number } }],
+      $or: findOptions,
     });
     if (check) {
       if (
+        'phone' in check &&
+        'email' in check &&
+        phone !== undefined &&
+        email !== undefined &&
         check.email === email &&
         check.phone.code === phone.code &&
         check.phone.number === phone.number
@@ -38,6 +57,8 @@ export class UserService {
           AppErrorMessages.EMAIL_PHONE_ALREADY_EXISTS,
         );
       } else if (
+        'phone' in check &&
+        phone !== undefined &&
         check.phone.code === phone.code &&
         check.phone.number === phone.number
       ) {
@@ -53,9 +74,14 @@ export class UserService {
 
   async createUser(user: User) {
     user.email = user.email.toLowerCase().trim();
-    user.password = user.password.trim();
-    await this.checkIfEmailOrPhoneAlreadyExists(user.email, user.phone);
-    user.password = await bcrypt.hash(user.password, 12);
+    if (user.password) {
+      user.password = user.password.trim();
+      user.password = await bcrypt.hash(user.password, 12);
+    }
+    await this.throwErrorIfEmailOrPhoneAlreadyExists({
+      email: user.email,
+      phone: user.phone,
+    });
     const newUser = await this.userModel.create(user);
     const result = newUser.toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -230,5 +256,102 @@ export class UserService {
       }
     }
     return false;
+  }
+
+  async returnIfEmailOrPhoneAlreadyExistsWithPendingStatus({
+    email,
+    phone,
+  }: {
+    email?: string;
+    phone?: {
+      code: number;
+      number: number;
+    };
+  }) {
+    if (email) email = email.toLowerCase().trim();
+    const findOptions: {
+      email?: string;
+      phone?: {
+        code: number;
+        number: number;
+      };
+    }[] = [];
+    if (email) findOptions.push({ email });
+    if (phone)
+      findOptions.push({ phone: { code: phone.code, number: phone.number } });
+
+    const check = await this.userModel.findOne({
+      $or: findOptions,
+    });
+    if (check) {
+      if (check?.status === UserStatus.PENDING) {
+        return check;
+      }
+      if (
+        'phone' in check &&
+        'email' in check &&
+        phone !== undefined &&
+        email !== undefined &&
+        check.email === email &&
+        check.phone.code === phone.code &&
+        check.phone.number === phone.number
+      ) {
+        throw new BadRequestException(
+          AppErrorMessages.EMAIL_PHONE_ALREADY_EXISTS,
+        );
+      } else if (
+        'phone' in check &&
+        phone !== undefined &&
+        check.phone.code === phone.code &&
+        check.phone.number === phone.number
+      ) {
+        throw new BadRequestException(
+          AppErrorMessages.PHONE_NUMBER_ALREADY_EXISTS,
+        );
+      } else if (check.email === email) {
+        throw new BadRequestException(AppErrorMessages.EMAIL_ALREADY_EXISTS);
+      }
+    }
+    return false;
+  }
+
+  async saveOrUpdateUserWithPendingStatus(user: Partial<User>) {
+    const existingUser =
+      await this.returnIfEmailOrPhoneAlreadyExistsWithPendingStatus({
+        email: user.email,
+        phone: user.phone,
+      });
+    let result: User;
+    if (existingUser) {
+      existingUser.status = UserStatus.PENDING;
+      for (const key in user) {
+        if (key !== 'status') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          existingUser[key] = user[key];
+        }
+      }
+      await existingUser.save();
+      result = existingUser.toJSON();
+    } else {
+      user.status = UserStatus.PENDING;
+      const newUser = await this.userModel.create(user);
+      result = newUser.toJSON();
+    }
+
+    return this.sanitizeUserData(result);
+  }
+
+  sanitizeUserData(user: User) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return omit(user, [
+      'password',
+      'otp',
+      'otp_expiry_at',
+      'createdAt',
+      'updatedAt',
+      '__v',
+      'status',
+      'user_type',
+    ]) as Partial<User>;
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import {
   CustomerLoginDTO,
+  CustomerOtpRegistrationDTO,
   CustomerRegistrationDTO,
 } from '../dtos/customers.dtos';
 import { CustomerLoginService } from '../services/customer/customer-login.service';
@@ -44,9 +45,11 @@ export class CustomersController {
     return result;
   }
 
-  @Post('register')
-  async customerRegistrationController(@Body() body: CustomerRegistrationDTO) {
-    const data = await this.registrationService.registerCustomer(body);
+  @Post('registration/sent-otp')
+  async customerRegistrationController(
+    @Body() body: CustomerOtpRegistrationDTO,
+  ) {
+    const data = await this.registrationService.registerCustomerWithPhone(body);
     const result = {
       ...CommonSuccessResponseObject,
       data,

@@ -12,16 +12,16 @@ import {
 } from 'class-validator';
 import { AddressType, UserStatus, UserTypeEnum } from '../../common/enums';
 
-class PhoneDto {
+export class PhoneDto {
   @IsOptional()
   @IsNumber()
   @ApiProperty({ default: 1111111111 })
-  number?: number;
+  number: number;
 
   @IsOptional()
   @IsNumber()
   @ApiProperty({ default: 91 })
-  code?: number;
+  code: number;
 }
 
 class AddressDto {

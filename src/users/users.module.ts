@@ -16,6 +16,9 @@ import { PropertyOwnerRegistrationService } from './services/property-owner/prop
 import { UserService } from './services/users/users-common.service';
 import { PropertyOwnerProfileService } from './services/property-owner/property-owner-profile.service';
 import { CustomerProfileService } from './services/customer/customer-profile.service';
+import { OTPRegistrationService } from './services/users/otp-registration.service';
+import { SMSService } from '../common/services/sms.service';
+import { OTPService } from '../common/services/otp.service';
 
 @Module({
   imports: [
@@ -23,7 +26,10 @@ import { CustomerProfileService } from './services/customer/customer-profile.ser
     UserSessionModule,
   ],
   providers: [
+    OTPRegistrationService,
     LoginAuthService,
+    OTPService,
+    SMSService,
     AdminLoginService,
     AdminProfileService,
     AdminManagementService,

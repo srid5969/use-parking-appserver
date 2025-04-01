@@ -1,15 +1,20 @@
+import { OTPRegistrationService } from './../users/otp-registration.service';
 import { UserService } from './../users/users-common.service';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../schemas/users.schema';
 import { UserStatus, UserTypeEnum } from '../../../common/enums';
 import { CustomerLoginService } from './customer-login.service';
-import { CustomerRegistrationDTO } from '../../dtos/customers.dtos';
+import {
+  CustomerOtpRegistrationDTO,
+  CustomerRegistrationDTO,
+} from '../../dtos/customers.dtos';
 
 @Injectable()
 export class CustomerRegistrationService {
   constructor(
     private readonly userService: UserService,
     private readonly loginService: CustomerLoginService,
+    private readonly otpRegistrationService: OTPRegistrationService,
   ) {}
 
   async registerCustomer(customer: CustomerRegistrationDTO) {
@@ -22,5 +27,12 @@ export class CustomerRegistrationService {
       passwordForLogin,
     );
     return loginUser;
+  }
+
+  async registerCustomerWithPhone(customer: CustomerOtpRegistrationDTO) {
+    await this.otpRegistrationService.sendOTPToUser(
+      customer.phone,
+      UserTypeEnum.CUSTOMER,
+    );
   }
 }

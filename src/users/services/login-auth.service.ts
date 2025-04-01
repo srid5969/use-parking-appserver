@@ -33,6 +33,9 @@ export class LoginAuthService {
     if (user.status !== UserStatus.ACTIVE)
       throw new BadRequestException(AppMessages.USER_IS_NOT_ACTIVE);
 
+    if (!user.password) {
+      throw new BadRequestException(AppErrorMessages.INCORRECT_PASSWORD);
+    }
     const isPasswordMatched = await bcrypt.compare(
       enteredPassword,
       user.password,

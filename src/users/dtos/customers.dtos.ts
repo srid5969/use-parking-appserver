@@ -4,12 +4,13 @@ import {
   IsEnum,
   IsIn,
   IsNotEmpty,
-  IsNotIn,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
-import { UserDto } from './users.dto';
 import { UserTypeEnum } from '../../common/enums';
+import { PhoneDto, UserDto } from './users.dto';
+import { Type } from 'class-transformer';
 
 export class CustomerLoginDTO {
   @ApiProperty({ default: 'customer@yopmail.com' })
@@ -27,4 +28,11 @@ export class CustomerRegistrationDTO extends UserDto {
   @ApiProperty({ default: UserTypeEnum.CUSTOMER })
   @IsOptional()
   user_type?: UserTypeEnum;
+}
+
+export class CustomerOtpRegistrationDTO {
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
 }

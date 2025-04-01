@@ -37,19 +37,28 @@ class Address {
 
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class User extends Document<Types.ObjectId> {
-  @Prop({ required: true })
+  @Prop({})
   name: string;
 
-  @Prop({ required: true, unique: true, lowercase: true })
+  @Prop({ lowercase: true })
   email: string;
 
-  @Prop({ required: true, type: Phone })
+  @Prop({ type: Phone })
   phone: Phone;
 
-  @Prop({ required: true })
-  password: string;
+  @Prop()
+  phone_verified?: boolean;
 
-  @Prop({ type: String, enum: ['male', 'female', 'others'], required: true })
+  @Prop()
+  otp: number;
+
+  @Prop({ type: Date })
+  otp_expire_at: Date;
+
+  @Prop({})
+  password?: string;
+
+  @Prop({ type: String, enum: ['male', 'female', 'others'], default: 'others' })
   gender: 'male' | 'female' | 'others';
 
   @Prop()
