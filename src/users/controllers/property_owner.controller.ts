@@ -16,6 +16,8 @@ import {
 import { UserTypeEnum } from '../../common/enums';
 import {
   PropertyOwnerLoginDTO,
+  PropertyOwnerOtpRegistrationDTO,
+  PropertyOwnerOtpRegistrationVerification,
   PropertyOwnerRegistrationDTO,
 } from '../dtos/property-owner.dtos';
 import { PropertyOwnerLoginService } from '../services/property-owner/property-owner-login.service';
@@ -43,11 +45,27 @@ export class PropertyOwnerController {
     return result;
   }
 
-  @Post('register')
-  async customerRegistrationController(
-    @Body() body: PropertyOwnerRegistrationDTO,
+  @Post('registration/sent-otp')
+  async PropertyOwnerRegistrationController(
+    @Body() body: PropertyOwnerOtpRegistrationDTO,
   ) {
-    const data = await this.registrationService.registerCustomer(body);
+    const data =
+      await this.registrationService.registerPropertyOwnerWithPhone(body);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Post('registration/verify-otp')
+  async verifyPropertyOwnerRegistrationController(
+    @Body() body: PropertyOwnerOtpRegistrationVerification,
+  ) {
+    const data = await this.registrationService.verifyPropertyOwnerWithPhone(
+      body.phone,
+      body.otp,
+    );
     const result = {
       ...CommonSuccessResponseObject,
       data,

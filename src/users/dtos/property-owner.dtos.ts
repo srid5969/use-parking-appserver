@@ -6,9 +6,11 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
-import { UserDto } from './users.dto';
+import { PhoneDto, UserDto } from './users.dto';
 import { UserTypeEnum } from '../../common/enums';
+import { Type } from 'class-transformer';
 
 export class PropertyOwnerLoginDTO {
   @ApiProperty({ default: 'propertyowner@yopmail.com' })
@@ -26,4 +28,25 @@ export class PropertyOwnerRegistrationDTO extends UserDto {
   @ApiProperty({ default: UserTypeEnum.PROPERTY_OWNER })
   @IsOptional()
   user_type?: UserTypeEnum;
+}
+
+
+
+export class PropertyOwnerOtpRegistrationDTO {
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
+}
+
+export class PropertyOwnerOtpRegistrationVerification {
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: '123456' })
+  otp: string;
 }
