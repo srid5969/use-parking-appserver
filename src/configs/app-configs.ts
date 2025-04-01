@@ -15,6 +15,9 @@ export const config = () => ({
   refreshTokenSecret: process.env.REFRESH_TOKEN_JWT_SECRET,
 
   serverBaseUrl: process.env.SERVER_BASE_URL || '',
+
+  otp_length: parseInt(process.env.OTP_LENGTH || '6', 10),
+  otp_expiry: parseInt(process.env.OTP_EXPIRY || '5', 10), // in minutes
 });
 
 export type EnvironmentConfigType = ReturnType<typeof config>;
