@@ -36,3 +36,15 @@ export class CustomerOtpRegistrationDTO {
   @ApiProperty({ type: () => PhoneDto })
   phone: PhoneDto;
 }
+
+export class CustomerOtpRegistrationVerification {
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: '123456' })
+  otp: string;
+}

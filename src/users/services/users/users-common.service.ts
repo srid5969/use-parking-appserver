@@ -271,15 +271,15 @@ export class UserService {
     if (email) email = email.toLowerCase().trim();
     const findOptions: {
       email?: string;
-      phone?: {
-        code: number;
-        number: number;
-      };
+      'phone.code'?: number;
+      'phone.number'?: number;
     }[] = [];
     if (email) findOptions.push({ email });
     if (phone)
-      findOptions.push({ phone: { code: phone.code, number: phone.number } });
-
+      findOptions.push({
+        'phone.code': phone.code,
+        'phone.number': phone.number,
+      });
     const check = await this.userModel.findOne({
       $or: findOptions,
     });
@@ -338,20 +338,35 @@ export class UserService {
       result = newUser.toJSON();
     }
 
-    return this.sanitizeUserData(result);
+    return sanitizeUserData(result);
   }
 
-  sanitizeUserData(user: User) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return omit(user, [
-      'password',
-      'otp',
-      'otp_expiry_at',
-      'createdAt',
-      'updatedAt',
-      '__v',
-      'status',
-      'user_type',
-    ]) as Partial<User>;
+  async findUserByPhone(phone: {
+    code: number;
+    number: number;
+  }): Promise<User> {
+    const data = await this.userModel.findOne({
+      'phone.code': phone.code,
+      'phone.number': phone.number,
+    });
+    if (!data) {
+      throw new NotFoundException(AppErrorMessages.USER_NOT_FOUND);
+    }
+    return data.toJSON();
   }
 }
+export const sanitizeUserData = (user: User) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  return omit(user, [
+    'password',
+    'otp',
+    'otp_expire_at',
+    'createdAt',
+    'updatedAt',
+    '__v',
+    'status',
+    '_id',
+    'user_type',
+    'phone_verified',
+  ]) as Partial<User>;
+};

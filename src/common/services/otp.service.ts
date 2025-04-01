@@ -18,4 +18,10 @@ export class OTPService {
     // In production, you might want to remove this line or use a logging library
     return '123456';
   }
+  getExpiryTime(): Date {
+    const expiryTime = this.configService.getOrThrow<number>('otp_expiry_time');
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + expiryTime);
+    return currentTime;
+  }
 }

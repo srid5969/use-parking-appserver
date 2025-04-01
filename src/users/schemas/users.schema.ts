@@ -50,7 +50,7 @@ export class User extends Document<Types.ObjectId> {
   phone_verified?: boolean;
 
   @Prop()
-  otp: number;
+  otp: string;
 
   @Prop({ type: Date })
   otp_expire_at: Date;

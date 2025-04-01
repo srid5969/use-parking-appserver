@@ -35,4 +35,14 @@ export class CustomerRegistrationService {
       UserTypeEnum.CUSTOMER,
     );
   }
+
+  async verifyCustomerWithPhone(
+    phone: { code: number; number: number },
+    otp: string,
+  ) {
+    return await this.otpRegistrationService.verifyOTPAndRegisterUser(
+      phone,
+      otp,
+    );
+  }
 }

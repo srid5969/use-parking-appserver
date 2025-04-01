@@ -9,6 +9,7 @@ import {
 import {
   CustomerLoginDTO,
   CustomerOtpRegistrationDTO,
+  CustomerOtpRegistrationVerification,
   CustomerRegistrationDTO,
 } from '../dtos/customers.dtos';
 import { CustomerLoginService } from '../services/customer/customer-login.service';
@@ -50,6 +51,21 @@ export class CustomersController {
     @Body() body: CustomerOtpRegistrationDTO,
   ) {
     const data = await this.registrationService.registerCustomerWithPhone(body);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Post('registration/verify-otp')
+  async verifyCustomerRegistrationController(
+    @Body() body: CustomerOtpRegistrationVerification,
+  ) {
+    const data = await this.registrationService.verifyCustomerWithPhone(
+      body.phone,
+      body.otp,
+    );
     const result = {
       ...CommonSuccessResponseObject,
       data,

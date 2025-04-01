@@ -3,6 +3,9 @@ export const AppMessages = {
   USER_IS_NOT_ACTIVE: 'User is not active',
 };
 export const AppErrorMessages = {
+  USER_ALREADY_REGISTERED: 'User already registered',
+  OTP_NOT_MATCH: 'OTP does not match',
+  OTP_EXPIRED: 'OTP has expired',
   TOKEN_INVALID: 'Invalid Token',
   INCORRECT_PASSWORD: 'Incorrect Password',
   TOKEN_MISSING: 'Token is missing',
