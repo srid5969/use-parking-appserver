@@ -24,28 +24,26 @@ export class PhoneDto {
   code: number;
 }
 
-class AddressDto {
-  _id?: string;
-
+export class AddressDto {
   @IsOptional()
   @IsEnum(AddressType)
   @ApiProperty({ enum: AddressType })
-  type?: AddressType;
+  type: AddressType;
 
   @IsOptional()
   @IsString()
   @ApiProperty({ default: 'Chennai' })
-  city?: string;
+  city: string;
 
   @IsOptional()
   @IsString()
   @ApiProperty({ default: 'Tamil Nadu' })
-  country?: string;
+  country: string;
 
   @IsOptional()
   @IsString()
   @ApiProperty({ default: '600 028' })
-  pinCode?: string;
+  pinCode: string;
 
   @IsOptional()
   @IsArray()
@@ -55,7 +53,7 @@ class AddressDto {
     isArray: true,
     default: [80.2325252, 13.0560723],
   }) // <-- Explicitly define type
-  location?: [number, number];
+  location: [number, number];
 }
 
 export class UserDto {

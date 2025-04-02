@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Get,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -18,6 +19,7 @@ import {
   PropertyOwnerLoginDTO,
   PropertyOwnerOtpRegistrationDTO,
   PropertyOwnerOtpRegistrationVerification,
+  UpdateProfileDto,
 } from '../dtos/property-owner.dtos';
 import { PropertyOwnerLoginService } from '../services/property-owner/property-owner-login.service';
 import { PropertyOwnerProfileService } from '../services/property-owner/property-owner-profile.service';
@@ -80,6 +82,26 @@ export class PropertyOwnerController {
       throw new ForbiddenException();
     const data = await this.profileService.getProfileDataByUserId(
       currentUser.userId,
+    );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Put('profile')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async updateProfile(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Body() body: UpdateProfileDto,
+  ) {
+    if (currentUser.user_type !== UserTypeEnum.PROPERTY_OWNER)
+      throw new ForbiddenException();
+    const data = await this.profileService.updateProfileDataByUserId(
+      currentUser.userId,
+      body,
     );
     const result = {
       ...CommonSuccessResponseObject,

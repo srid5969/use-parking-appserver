@@ -11,7 +11,7 @@ class Phone {
 }
 
 @Schema()
-class Address {
+export class Address {
   @Prop({ type: Types.ObjectId, auto: true })
   _id?: Types.ObjectId;
 
@@ -38,10 +38,10 @@ class Address {
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class User extends Document<Types.ObjectId> {
   @Prop({})
-  name: string;
+  name?: string;
 
   @Prop({ lowercase: true })
-  email: string;
+  email?: string;
 
   @Prop({ type: Phone })
   phone: Phone;
@@ -74,7 +74,7 @@ export class User extends Document<Types.ObjectId> {
   user_type: UserTypeEnum;
 
   @Prop()
-  addresses: Address[];
+  addresses?: Address[];
 
   @Prop({
     type: String,

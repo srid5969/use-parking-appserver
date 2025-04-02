@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import { omit } from 'lodash';
 import { Model, Types } from 'mongoose';
 import { AppErrorMessages } from '../../../common/consts';
 import { User } from '../../schemas/users.schema';
 import { sanitizeUserData } from './users-common.service';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserProfileService {
@@ -97,6 +98,20 @@ export class UserProfileService {
   }
 
   async updateProfileByOwner(profileId: string, profile: Partial<User>) {
+    profile = omit(profile, [
+      'phone_verified',
+      'email_verified',
+      'otp',
+      'otp_expire_at',
+      'password',
+      'createdAt',
+      'updatedAt',
+      'user_type',
+      'status',
+      'updatedBy',
+      'createdBy',
+    ] as (keyof User)[]);
+
     await this.checkUsersEmailAnPhoneUniqueOnUpdate(
       new Types.ObjectId(profileId),
       {

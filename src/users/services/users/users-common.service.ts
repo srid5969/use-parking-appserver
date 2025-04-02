@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
-import * as omit from 'lodash/omit';
+import { omit } from 'lodash';
 import { AppErrorMessages } from '../../../common/consts';
 import { QueryParams } from '../../../common/dtos/query-params.dto';
 import { UserStatus, UserTypeEnum } from '../../../common/enums';
@@ -73,13 +73,15 @@ export class UserService {
   }
 
   async createUser(user: User) {
-    user.email = user.email.toLowerCase().trim();
+    if (user.email) {
+      user.email = user.email.toLowerCase().trim();
+    }
     if (user.password) {
       user.password = user.password.trim();
       user.password = await bcrypt.hash(user.password, 12);
     }
     await this.throwErrorIfEmailOrPhoneAlreadyExists({
-      email: user.email,
+      email: user?.email,
       phone: user.phone,
     });
     const newUser = await this.userModel.create(user);
@@ -130,7 +132,12 @@ export class UserService {
     if (!user) {
       throw new BadRequestException(AppErrorMessages.USER_NOT_FOUND);
     }
-    return user;
+    return sanitizeUserData(
+      user.toObject({
+        schemaFieldsOnly: true,
+        getters: true,
+      }),
+    );
   }
 
   async getUsersListByUserType(userType: UserTypeEnum[], params: QueryParams) {
@@ -356,7 +363,6 @@ export class UserService {
   }
 }
 export const sanitizeUserData = (user: User) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   return omit(user, [
     'password',
     'otp',
@@ -368,5 +374,6 @@ export const sanitizeUserData = (user: User) => {
     '_id',
     'user_type',
     'phone_verified',
-  ]) as Partial<User>;
+    'id',
+  ]);
 };

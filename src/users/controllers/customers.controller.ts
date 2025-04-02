@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Get,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -18,6 +19,7 @@ import {
   CustomerLoginDTO,
   CustomerOtpRegistrationDTO,
   CustomerOtpRegistrationVerification,
+  UpdateProfileDto,
 } from '../dtos/customers.dtos';
 import { CustomerLoginService } from '../services/customer/customer-login.service';
 import { CustomerProfileService } from '../services/customer/customer-profile.service';
@@ -75,11 +77,31 @@ export class CustomersController {
   @Get('profile')
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
-  async getAdminProfile(@GetCurrentUser() currentUser: CurrentUser) {
+  async getProfile(@GetCurrentUser() currentUser: CurrentUser) {
     if (currentUser.user_type !== UserTypeEnum.CUSTOMER)
       throw new ForbiddenException();
     const data = await this.profileService.getProfileDataByUserId(
       currentUser.userId,
+    );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Put('profile')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async updateProfile(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Body() body: UpdateProfileDto,
+  ) {
+    if (currentUser.user_type !== UserTypeEnum.CUSTOMER)
+      throw new ForbiddenException();
+    const data = await this.profileService.updateProfileDataByUserId(
+      currentUser.userId,
+      body,
     );
     const result = {
       ...CommonSuccessResponseObject,
