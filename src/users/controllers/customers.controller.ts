@@ -17,7 +17,7 @@ import { UserTypeEnum } from '../../common/enums';
 import {
   CustomerLoginDTO,
   CustomerOtpRegistrationDTO,
-  CustomerOtpRegistrationVerification
+  CustomerOtpRegistrationVerification,
 } from '../dtos/customers.dtos';
 import { CustomerLoginService } from '../services/customer/customer-login.service';
 import { CustomerProfileService } from '../services/customer/customer-profile.service';

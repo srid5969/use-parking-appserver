@@ -3,6 +3,8 @@ export const AppMessages = {
   USER_IS_NOT_ACTIVE: 'User is not active',
 };
 export const AppErrorMessages = {
+  EMAIL_ALREADY_VERIFIED: 'Email already verified',
+  PHONE_ALREADY_VERIFIED: 'Phone number already verified',
   USER_ALREADY_REGISTERED: 'User already registered',
   OTP_NOT_MATCH: 'OTP does not match',
   OTP_EXPIRED: 'OTP has expired',

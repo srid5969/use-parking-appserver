@@ -17,7 +17,7 @@ import { UserTypeEnum } from '../../common/enums';
 import {
   PropertyOwnerLoginDTO,
   PropertyOwnerOtpRegistrationDTO,
-  PropertyOwnerOtpRegistrationVerification
+  PropertyOwnerOtpRegistrationVerification,
 } from '../dtos/property-owner.dtos';
 import { PropertyOwnerLoginService } from '../services/property-owner/property-owner-login.service';
 import { PropertyOwnerProfileService } from '../services/property-owner/property-owner-profile.service';

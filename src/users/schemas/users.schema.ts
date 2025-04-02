@@ -50,6 +50,9 @@ export class User extends Document<Types.ObjectId> {
   phone_verified?: boolean;
 
   @Prop()
+  email_verified?: boolean;
+
+  @Prop()
   otp: string;
 
   @Prop({ type: Date })
