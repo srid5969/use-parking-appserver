@@ -103,7 +103,6 @@ export class UserProfileService {
       'email_verified',
       'otp',
       'otp_expire_at',
-      'password',
       'createdAt',
       'updatedAt',
       'user_type',
