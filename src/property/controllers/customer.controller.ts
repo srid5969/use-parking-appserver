@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
@@ -6,9 +6,8 @@ import {
   CurrentUser,
   GetCurrentUser,
 } from '../../common/decorators/current-users.decorator';
-import { CreatePropertyDto } from '../dtos/property-owners.dto';
-import { CustomerParkingManagementService } from './../services/customer.service';
 import { GetAvailableParkingNearMe } from '../dtos/customer.dto';
+import { CustomerParkingManagementService } from './../services/customer.service';
 
 @Controller('customers')
 @ApiTags('Customers')

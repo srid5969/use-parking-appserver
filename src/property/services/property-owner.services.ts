@@ -4,6 +4,7 @@ import { Property } from '../schemas/property.schema';
 import { Model, Types } from 'mongoose';
 import { CreatePropertyDto } from '../dtos/property-owners.dto';
 import { omit } from 'lodash';
+import { QueryParams } from '../../common/dtos/query-params.dto';
 
 @Injectable()
 export class PropertyOwnerPropertyManagementService {
@@ -22,16 +23,43 @@ export class PropertyOwnerPropertyManagementService {
     return sanitizePropertyObject(savedProperty.toObject());
   }
 
-  updateProperty() {
-    // Logic to update a property
-  }
+  async getAllOwnersProperties(ownerId: string, params: QueryParams) {
+    const page = params.page || 1;
+    const limit = params.limit || 24;
+    const sort = params.sort || 'createdAt|DESC';
+    const filters = params.filters || '';
+    const textSearch = params.textSearch || '';
+    const skip = page * limit - limit;
+    const [sortField, sortOrder] = sort.split('|');
+    const filterAry = filters.split(',');
+    const queryObj = {
+      owner_id: new Types.ObjectId(ownerId),
+    };
+    for (const element of filterAry) {
+      const filterVal = element;
+      const [search_field, search_value] = filterVal.split('|');
+      queryObj[search_field] = search_value;
+    }
 
-  deleteProperty() {
-    // Logic to delete a property
-  }
+    if (textSearch) {
+      queryObj['$or'] = [];
+    }
 
-  getPropertyDetails() {
-    // Logic to get property details
+    const data = await this.propertyModel
+      .find(queryObj, {
+        _id: 1,
+        name: 1,
+        status: 1,
+        type: 1,
+        description: 1,
+        address: 1,
+      })
+      .limit(limit)
+      .skip(skip)
+      .sort({ [sortField]: sortOrder === 'DESC' ? -1 : 1 });
+    const totalCount = await this.propertyModel.countDocuments(queryObj);
+
+    return { data, totalCount };
   }
 }
 

@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Get,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -16,6 +17,7 @@ import { PropertyOwnerPropertyManagementService } from '../services/property-own
 import { UserTypeEnum } from '../../common/enums';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import { CreatePropertyDto } from '../dtos/property-owners.dto';
+import { QueryParams } from '../../common/dtos/query-params.dto';
 
 @Controller('property-owner')
 @ApiTags('Property Owner')
@@ -38,6 +40,28 @@ export class OwnersParkingManagementController {
       await this.propertyOwnerPropertyManagementService.createProperty(
         body,
         currentUser.userId,
+      );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Get('parking')
+  @ApiOperation({ summary: 'Get All Parking Properties' })
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAllParkingProperties(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Query() query: QueryParams,
+  ) {
+    if (currentUser.user_type !== UserTypeEnum.PROPERTY_OWNER)
+      throw new ForbiddenException();
+    const data =
+      await this.propertyOwnerPropertyManagementService.getAllOwnersProperties(
+        currentUser.userId,
+        query,
       );
     const result = {
       ...CommonSuccessResponseObject,
