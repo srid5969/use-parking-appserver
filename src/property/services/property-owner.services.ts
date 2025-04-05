@@ -19,7 +19,7 @@ export class PropertyOwnerPropertyManagementService {
     });
     const savedProperty = await createProperty.save();
 
-    return sanitizePropertyObject(savedProperty);
+    return sanitizePropertyObject(savedProperty.toObject());
   }
 
   updateProperty() {
@@ -36,7 +36,7 @@ export class PropertyOwnerPropertyManagementService {
 }
 
 export function sanitizePropertyObject(property: Property) {
-  const omitProperties = ['createdAt', 'updatedAt', '__v', 'owner_id', '_id'];
-  const sanitizedProperty = omit(property.toObject(), omitProperties);
-  return sanitizedProperty;
+  const omitProperties = ['createdAt', 'updatedAt', '__v', 'owner_id'];
+  const sanitizedProperty = omit(property, omitProperties);
+  return sanitizedProperty as unknown as CreatePropertyDto;
 }

@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
@@ -26,6 +26,7 @@ import { CustomerProfileService } from '../services/customer/customer-profile.se
 import { CustomerRegistrationService } from '../services/customer/customer-registration.service';
 
 @Controller('customers')
+@ApiTags('Customers')
 export class CustomersController {
   constructor(
     private readonly loginService: CustomerLoginService,
