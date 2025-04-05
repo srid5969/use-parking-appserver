@@ -3,6 +3,7 @@ export const AppMessages = {
   USER_IS_NOT_ACTIVE: 'User is not active',
 };
 export const AppErrorMessages = {
+  INVALID_ID: 'Invalid ID',
   EMAIL_ALREADY_VERIFIED: 'Email already verified',
   PHONE_ALREADY_VERIFIED: 'Phone number already verified',
   USER_ALREADY_REGISTERED: 'User already registered',
