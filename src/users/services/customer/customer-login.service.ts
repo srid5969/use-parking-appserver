@@ -10,4 +10,13 @@ export class CustomerLoginService {
       UserTypeEnum.CUSTOMER,
     ]);
   }
+
+  async loginUsingPhonePassword(
+    phone: { number: number; code: number },
+    password: string,
+  ) {
+    return await this.loginService.loginUsingPhonePassword(phone, password, [
+      UserTypeEnum.CUSTOMER,
+    ]);
+  }
 }

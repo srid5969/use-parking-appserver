@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEmail,
@@ -11,14 +12,14 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { UserStatus, UserTypeEnum } from '../../common/enums';
+import { UserTypeEnum } from '../../common/enums';
 import { AddressDto, PhoneDto, UserDto } from './users.dto';
-import { Type } from 'class-transformer';
 
 export class CustomerLoginDTO {
-  @ApiProperty({ default: 'customer@yopmail.com' })
-  @IsEmail()
-  email: string;
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
   @IsString()
   @ApiProperty({ default: 'Test@123' })
   password: string;

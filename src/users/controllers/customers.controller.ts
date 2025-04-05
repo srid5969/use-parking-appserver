@@ -36,9 +36,9 @@ export class CustomersController {
 
   @Post('login')
   async loginController(@Body() body: CustomerLoginDTO) {
-    const { email, password } = body;
-    const data = await this.loginService.loginUsingEmailPassword(
-      email,
+    const { phone, password } = body;
+    const data = await this.loginService.loginUsingPhonePassword(
+      phone,
       password,
     );
     const result = {

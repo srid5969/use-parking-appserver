@@ -61,6 +61,52 @@ export class LoginAuthService {
     };
   }
 
+  public async loginUsingPhonePassword(
+    phone: {
+      code: number;
+      number: number;
+    },
+    enteredPassword: string,
+    userType: UserTypeEnum[],
+  ) {
+    enteredPassword = enteredPassword.trim();
+    const user = await this.userModel.findOne({
+      'phone.code': phone.code,
+      'phone.number': phone.number,
+      user_type: { $in: userType },
+    });
+    if (!user) throw new NotFoundException(AppMessages.USER_NOT_FOUND);
+    if (user.status !== UserStatus.ACTIVE)
+      throw new BadRequestException(AppMessages.USER_IS_NOT_ACTIVE);
+
+    if (!user.password) {
+      throw new BadRequestException(AppErrorMessages.INCORRECT_PASSWORD);
+    }
+    const isPasswordMatched = await bcrypt.compare(
+      enteredPassword,
+      user.password,
+    );
+
+    if (!isPasswordMatched) {
+      throw new BadRequestException(AppErrorMessages.INCORRECT_PASSWORD);
+    }
+
+    const token = await this.userSessionService.generateNewTokenUsingUserData({
+      phone_code: user.phone.code,
+      mobilePhone: user.phone.number,
+      user_type: user.user_type,
+      userId: user._id,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const userProfileInfo = this.sanitization(user.toObject());
+
+    return {
+      ...token,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      profile_info: userProfileInfo,
+    };
+  }
+
   sanitization(user: User): any {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userProfileInfo } = user;
