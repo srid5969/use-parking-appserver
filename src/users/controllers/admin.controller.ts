@@ -170,4 +170,21 @@ export class AdminController {
     };
     return result;
   }
+
+
+  @Get()
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAllOwnersRecordController(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Query() query: QueryParams,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.adminManagementService.getAllAdmins(query);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
 }

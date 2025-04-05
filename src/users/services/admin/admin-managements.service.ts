@@ -52,6 +52,22 @@ export class AdminManagementService {
     );
     return admins;
   }
+
+  async getAllPropertyOwners(queryParams: QueryParams) {
+    const propertyOwners = await this.userService.getUsersListByUserType(
+      [UserTypeEnum.PROPERTY_OWNER],
+      queryParams,
+    );
+    return propertyOwners;
+  }
+
+  async getAllCustomers(queryParams: QueryParams) {
+    const customers = await this.userService.getUsersListByUserType(
+      [UserTypeEnum.CUSTOMER],
+      queryParams,
+    );
+    return customers;
+  }
   // get admin by id
   async getAdminById(adminId: string) {
     const admin = await this.userService.getUserById(adminId);
