@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { LoginAuthService } from '../login-auth.service';
 import { UserTypeEnum } from '../../../common/enums';
+import { PhoneDto } from '../../dtos/users.dto';
 
 @Injectable()
 export class CustomerLoginService {
@@ -11,10 +12,7 @@ export class CustomerLoginService {
     ]);
   }
 
-  async loginUsingPhonePassword(
-    phone: { number: number; code: number },
-    password: string,
-  ) {
+  async loginUsingPhonePassword(phone: PhoneDto, password: string) {
     return await this.loginService.loginUsingPhonePassword(phone, password, [
       UserTypeEnum.CUSTOMER,
     ]);

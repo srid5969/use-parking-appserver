@@ -8,8 +8,9 @@ import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { AppErrorMessages, AppMessages } from '../../common/consts';
 import { UserStatus, UserTypeEnum } from '../../common/enums';
-import { User } from '../schemas/users.schema';
 import { UserSessionManagementService } from '../../user-session/services/user-session-management.service';
+import { PhoneDto } from '../dtos/users.dto';
+import { User } from '../schemas/users.schema';
 
 @Injectable()
 export class LoginAuthService {
@@ -62,10 +63,7 @@ export class LoginAuthService {
   }
 
   public async loginUsingPhonePassword(
-    phone: {
-      code: number;
-      number: number;
-    },
+    phone: PhoneDto,
     enteredPassword: string,
     userType: UserTypeEnum[],
   ) {

@@ -16,9 +16,10 @@ import { UserTypeEnum } from '../../common/enums';
 import { Type } from 'class-transformer';
 
 export class PropertyOwnerLoginDTO {
-  @ApiProperty({ default: 'propertyowner@yopmail.com' })
-  @IsEmail()
-  email: string;
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  @ApiProperty({ type: () => PhoneDto })
+  phone: PhoneDto;
   @IsString()
   @ApiProperty({ default: 'Test@123' })
   password: string;
@@ -51,7 +52,6 @@ export class PropertyOwnerOtpRegistrationVerification {
   @ApiProperty({ default: '123456' })
   otp: string;
 }
-
 
 export class UpdateProfileDto {
   @ApiPropertyOptional()
