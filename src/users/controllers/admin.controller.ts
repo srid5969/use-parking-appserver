@@ -171,7 +171,6 @@ export class AdminController {
     return result;
   }
 
-
   @Get('property/owner')
   @ApiOperation({ summary: 'Get all property owners' })
   @ApiBearerAuth('JWT')
@@ -181,7 +180,24 @@ export class AdminController {
     @Query() query: QueryParams,
   ) {
     await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
-    const data = await this.adminManagementService.getAllAdmins(query);
+    const data = await this.adminManagementService.getAllPropertyOwners(query);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Get('customer')
+  @ApiOperation({ summary: 'Get all customers' })
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAllCustomersRecordController(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Query() query: QueryParams,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.adminManagementService.getAllCustomers(query);
     const result = {
       ...CommonSuccessResponseObject,
       data,
