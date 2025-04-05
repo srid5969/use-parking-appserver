@@ -65,16 +65,16 @@ export class CustomerBookingService {
       .populate([
         {
           path: 'customer_id',
-          transform: (doc) => {
-            return sanitizeUserData(doc.toObject());
+          transform: (doc: User) => {
+            return sanitizeUserData(doc.toObject<User>());
           },
         },
         {
           path: 'property_id',
           populate: {
             path: 'owner_id',
-            transform: (doc) => {
-              return sanitizeUserData(doc.toObject());
+            transform: (doc: User) => {
+              return sanitizeUserData(doc.toObject<User>());
             },
           },
         },
