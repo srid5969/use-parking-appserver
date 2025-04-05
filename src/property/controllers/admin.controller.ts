@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
@@ -18,7 +18,8 @@ export class AdminPropertiesManagementController {
     private readonly propertyService: AdminPropertyManagementService,
   ) {}
 
-  @Get('properties/:owner_id')
+  @Get('properties/owner/:owner_id')
+  @ApiOperation({ summary: 'Get properties by owner ID' })
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async addNewUserByUserType(
@@ -31,6 +32,23 @@ export class AdminPropertiesManagementController {
       query,
       ownerId,
     );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @ApiOperation({ summary: 'Get Property or parking by ID' })
+  @Get('properties/:property_id')
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getPropertyById(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Param('property_id') propertyId: string,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.propertyService.getPropertyById(propertyId);
     const result = {
       ...CommonSuccessResponseObject,
       data,
