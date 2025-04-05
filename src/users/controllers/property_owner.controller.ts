@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
@@ -26,6 +26,7 @@ import { PropertyOwnerProfileService } from '../services/property-owner/property
 import { PropertyOwnerRegistrationService } from '../services/property-owner/property-owner-registration.service';
 
 @Controller('property-owner')
+@ApiTags('Property Owner')
 export class PropertyOwnerController {
   constructor(
     private readonly loginService: PropertyOwnerLoginService,

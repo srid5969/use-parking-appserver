@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { VehicleType } from '../../general/schemas/vehicles-types.schema';
+import { Feature } from '../../general/schemas/features.schema';
 
 export class PropertyAddress {
   @Prop({ required: true })
@@ -8,7 +10,7 @@ export class PropertyAddress {
   country: string;
   @Prop({ required: true })
   pinCode: string;
-  @Prop({ required: true })
+  @Prop({ type: [Number], required: true, index: '2dsphere' })
   location: [number, number];
 }
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
@@ -28,15 +30,12 @@ export class Property extends Document<Types.ObjectId> {
   @Prop({ required: true })
   address: PropertyAddress;
 
-  @Prop({ required: true })
-  price_per_hour: number;
-
   @Prop({
     type: String,
-    enum: ['available', 'occupied', 'reserved', 'inactive'],
+    enum: ['available', 'not_available'],
     default: 'available',
   })
-  status: 'available' | 'occupied' | 'reserved' | 'inactive';
+  status: 'available' | 'not_available';
 
   @Prop()
   photos: string[];
@@ -44,10 +43,24 @@ export class Property extends Document<Types.ObjectId> {
   @Prop({ required: true })
   capacity: number;
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        _id: { type: Types.ObjectId, ref: VehicleType.name }, // use actual collection name if exists
+        name: String,
+      },
+    ],
+  })
   vehicle_types_allowed: { _id: Types.ObjectId; name: string }[];
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        _id: { type: Types.ObjectId, ref: Feature.name }, // use actual collection name if exists
+        name: String,
+      },
+    ],
+  })
   features: { _id: Types.ObjectId; name: string }[];
 }
 
