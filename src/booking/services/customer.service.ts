@@ -90,6 +90,7 @@ export class CustomerBookingService {
     delete booking.property_id; 
     booking.customer = customer;
     booking.property = property;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = {
       ...booking,
       property,
