@@ -6,6 +6,7 @@ import { Model, Types } from 'mongoose';
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { sanitizeUserData } from '../../users/services/users/users-common.service';
 import { User } from '../../users/schemas/users.schema';
+import { Property } from '../../property/schemas/property.schema';
 
 @Injectable()
 export class CustomerBookingService {
@@ -87,7 +88,7 @@ export class CustomerBookingService {
     const property = booking.property_id as User;
     const customer = booking.customer_id as User;
     delete booking.customer_id;
-    delete booking.property_id; 
+    delete booking.property_id;
     booking.customer = customer;
     booking.property = property;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -98,6 +99,13 @@ export class CustomerBookingService {
       customer,
     };
 
-    return result;
+    return result as {
+      status: string;
+      payment_status: string;
+      _id: string;
+      customer: User;
+      property: Property;
+      property_owner: User;
+    };
   }
 }
