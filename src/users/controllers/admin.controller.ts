@@ -9,7 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
@@ -172,7 +172,8 @@ export class AdminController {
   }
 
 
-  @Get()
+  @Get('property/owner')
+  @ApiOperation({ summary: 'Get all property owners' })
   @ApiBearerAuth('JWT')
   @UseGuards(CommonAuthGuard)
   async getAllOwnersRecordController(
