@@ -55,4 +55,22 @@ export class AdminPropertiesManagementController {
     };
     return result;
   }
+
+  // get all properties
+  @Get('properties')
+  @ApiOperation({ summary: 'Get all properties' })
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getAllProperties(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Query() query: QueryParams,
+  ) {
+    await this.userService.validateIfUserIsSuperAdmin(currentUser.userId);
+    const data = await this.propertyService.getAllProperties(query);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
 }

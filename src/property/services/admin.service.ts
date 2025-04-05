@@ -66,4 +66,42 @@ export class AdminPropertyManagementService {
     }
     return property;
   }
+
+  async getAllProperties(queryParams: QueryParams) {
+    const page = queryParams.page || 1;
+    const limit = queryParams.limit || 24;
+    const sort = queryParams.sort || 'createdAt|DESC';
+    const filters = queryParams.filters || '';
+    const textSearch = queryParams.textSearch || '';
+    const skip = page * limit - limit;
+    const [sortField, sortOrder] = sort.split('|');
+    const filterAry = filters.split(',');
+    const queryObj = {};
+
+    for (const element of filterAry) {
+      const filterVal = element;
+      const [search_field, search_value] = filterVal.split('|');
+      queryObj[search_field] = search_value;
+    }
+
+    if (textSearch) {
+      queryObj['$or'] = [];
+    }
+
+    const data = await this.propertyModel
+      .find(queryObj, {
+        _id: 1,
+        name: 1,
+        status: 1,
+        type: 1,
+        description: 1,
+        address: 1,
+      })
+      .limit(limit)
+      .skip(skip)
+      .sort({ [sortField]: sortOrder === 'DESC' ? -1 : 1 });
+    const totalCount = await this.propertyModel.countDocuments(queryObj);
+
+    return { data, totalCount };
+  }
 }
