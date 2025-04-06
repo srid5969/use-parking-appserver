@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import {
   Injectable,
   InternalServerErrorException,
@@ -7,8 +11,9 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { lookup as mimeLookup } from 'mime-types';
 import { extname } from 'path';
-import { v4 as uuid } from 'uuid';
 import { EnvironmentConfigType } from '../../configs';
+import { Types } from 'mongoose';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class StorageService {
@@ -38,7 +43,7 @@ export class StorageService {
     const lookupResult: string =
       mimeLookup(fileExtension) || 'application/octet-stream';
 
-    const key = `${folder}/${uuid}${fileExtension}`;
+    const key = `${folder}/${new Types.ObjectId().toHexString()}${fileExtension}`;
 
     const command = new PutObjectCommand({
       Bucket: this.bucket,
@@ -52,8 +57,8 @@ export class StorageService {
       const fileUrl = `https://${this.bucket}.s3.${this.configService.getOrThrow<string>('aws_region')}.amazonaws.com/${key}`;
       this.logger.log(`Uploaded to S3: ${fileUrl}`);
       return {
-        fileUrl,
-        fileName: key,
+        // fileUrl,
+        key: key,
         mimeType: lookupResult,
         originalName,
         fileExtension,
@@ -98,5 +103,32 @@ export class StorageService {
   ) {
     const data = await this.uploadFile(fileBuffer, originalName, fileType);
     return data;
+  }
+
+  async generateSignedUrl(key: string): Promise<string> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      });
+
+      const url = await getSignedUrl(this.s3Client, command, {
+        expiresIn: 3600,
+      }); // 1 hour
+      return url;
+    } catch (error) {
+      if (error instanceof Error)
+        this.logger.error(
+          `Error generating signed URL for key: ${key}`,
+          error.stack,
+        );
+      else
+        this.logger.error(
+          `Error generating signed URL for key: ${key}`,
+          JSON.stringify(error),
+        );
+
+      throw error;
+    }
   }
 }
