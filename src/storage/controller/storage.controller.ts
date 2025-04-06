@@ -48,6 +48,10 @@ export class StorageController {
     }
 
     const signedUrl = await this.storageService.generateSignedUrl(key);
-    return { signedUrl };
+    const result = {
+      ...CommonSuccessResponseObject,
+      data: { signedUrl },
+    };
+    return result;
   }
 }
