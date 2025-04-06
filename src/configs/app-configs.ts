@@ -18,6 +18,15 @@ export const config = () => ({
 
   otp_length: parseInt(process.env.OTP_LENGTH || '6', 10),
   otp_expiry_time: parseInt(process.env.OTP_EXPIRY || '5', 10), // in minutes
+
+  // SMS (Twilio) config
+  twilio_account_sid: process.env.TWILIO_ACCOUNT_SID as string,
+  twilio_auth_token: process.env.TWILIO_AUTH_TOKEN as string,
+  twilio_phone_number: process.env.TWILIO_PHONE_NUMBER as string,
+
+  // Email (SendGrid) config
+  sendgrid_api_key: process.env.SENDGRID_API_KEY as string,
+  sendgrid_sender_email: process.env.SENDGRID_SENDER_EMAIL as string,
 });
 
 export type EnvironmentConfigType = ReturnType<typeof config>;
