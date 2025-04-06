@@ -13,7 +13,7 @@ import { fileFilter } from '../../common/utils/file-filter';
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
-  @Post(':file-type')
+  @Post(':folder')
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter,
@@ -22,7 +22,7 @@ export class StorageController {
   )
   async upload(
     @UploadedFile() file: Express.Multer.File,
-    @Param('file-type') fileType: string,
+    @Param('folder') fileType: string,
   ) {
     const fileUrl = await this.storageService.uploadByFileType(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
