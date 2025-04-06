@@ -27,6 +27,11 @@ export const config = () => ({
   // Email (SendGrid) config
   sendgrid_api_key: process.env.SENDGRID_API_KEY as string,
   sendgrid_sender_email: process.env.SENDGRID_SENDER_EMAIL as string,
+
+  aws_region: process.env.AWS_REGION as string,
+  aws_access_key: process.env.AWS_ACCESS_KEY_ID as string,
+  aws_secret_key: process.env.AWS_SECRET_ACCESS_KEY as string,
+  aws_s3_bucket: process.env.AWS_S3_BUCKET_NAME as string,
 });
 
 export type EnvironmentConfigType = ReturnType<typeof config>;
