@@ -35,7 +35,7 @@ export class StorageController {
       fileType,
     );
     const result = {
-      CommonSuccessResponseObject,
+      ...CommonSuccessResponseObject,
       data,
     };
     return result;
