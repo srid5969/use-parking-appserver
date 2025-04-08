@@ -32,6 +32,11 @@ export const config = () => ({
   aws_access_key: process.env.AWS_ACCESS_KEY_ID as string,
   aws_secret_key: process.env.AWS_SECRET_ACCESS_KEY as string,
   aws_s3_bucket: process.env.AWS_S3_BUCKET_NAME as string,
+
+  // Razorpay config
+  razorpay_key_id: process.env.RAZORPAY_KEY_ID as string,
+  razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET as string,
+  razorpay_webhook_secret: process.env.RAZORPAY_WEBHOOK_SECRET as string,
 });
 
 export type EnvironmentConfigType = ReturnType<typeof config>;
