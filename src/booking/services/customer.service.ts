@@ -7,12 +7,20 @@ import { QueryParams } from '../../common/dtos/query-params.dto';
 import { sanitizeUserData } from '../../users/services/users/users-common.service';
 import { User } from '../../users/schemas/users.schema';
 import { Property } from '../../property/schemas/property.schema';
+import { RazorPayService } from '../../common/services/payment.service';
+import { CreateBookingDto } from '../dto/customer.dto';
+import { Setting } from '../../general/schemas/settings.schema';
 
 @Injectable()
 export class CustomerBookingService {
   constructor(
     @InjectModel(Booking.name)
     private readonly bookingModel: Model<Booking>,
+    private readonly razorpayService: RazorPayService,
+    @InjectModel(Property.name)
+    private readonly propertyModel: Model<Property>,
+    @InjectModel(Setting.name)
+    private readonly settingModel: Model<Setting>,
   ) {}
 
   async getBookingsList(params: QueryParams, customerId: string) {
@@ -106,6 +114,46 @@ export class CustomerBookingService {
       customer: User;
       property: Property;
       property_owner: User;
+    };
+  }
+
+  async createBooking(dto: CreateBookingDto, customerId: string) {
+    const property = await this.propertyModel.findById(dto.property_id);
+    if (!property) {
+      throw new NotFoundException('Property not found');
+    }
+    if (property.status !== 'available') {
+      throw new NotFoundException('Property not available');
+    }
+
+    const setting = await this.settingModel.findOne();
+    if (!setting) {
+      throw new NotFoundException('Settings not found');
+    }
+    const booking = new this.bookingModel({
+      ...dto,
+      status: 'pending',
+      payment_status: 'pending',
+      customer_id: customerId,
+      total_amount: setting.value,
+    });
+
+    const savedBooking = await booking.save();
+
+    const razorpayOrder = await this.razorpayService.createOrder(
+      setting.value,
+      'INR',
+      savedBooking._id.toString(),
+      {
+        customer_id: savedBooking.customer_id.toString(),
+        property_id: savedBooking.property_id.toString(),
+        booking_id: savedBooking._id.toString(),
+      },
+    );
+
+    return {
+      booking_id: savedBooking._id,
+      razorpay_order: razorpayOrder,
     };
   }
 }

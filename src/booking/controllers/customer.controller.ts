@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   ForbiddenException,
   Get,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import {
 import { CustomerBookingService } from '../services/customer.service';
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { CommonSuccessResponseObject } from '../../common/consts';
+import { CreateBookingDto } from '../dto/customer.dto';
 
 @Controller('customers')
 @ApiTags('Customers')
@@ -57,6 +60,27 @@ export class CustomerParkingBookingController {
     }
     const data = await this.customerBookingService.getBookingById(
       id,
+      currentUser.userId,
+    );
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Post('bookings')
+  @UseGuards(CommonAuthGuard)
+  @ApiBearerAuth('JWT')
+  async create(
+    @Body() dto: CreateBookingDto,
+    @GetCurrentUser() currentUser: CurrentUser,
+  ) {
+    if (currentUser.user_type !== UserTypeEnum.CUSTOMER) {
+      throw new ForbiddenException();
+    }
+    const data = await this.customerBookingService.createBooking(
+      dto,
       currentUser.userId,
     );
     const result = {
