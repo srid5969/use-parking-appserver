@@ -14,7 +14,7 @@ export class PropertyAddress {
   location: [number, number];
 }
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
-export class Property  {
+export class Property {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner_id: Types.ObjectId;
 
