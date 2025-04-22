@@ -51,6 +51,7 @@ export class BookingAdminService {
   }
 
   async getBookingById(id: string) {
-    return this.bookingModel.findById(id).exec();
+    const data = await this.bookingModel.findById(id).exec();
+    return data;
   }
 }

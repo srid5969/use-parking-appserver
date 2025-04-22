@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
@@ -28,6 +28,23 @@ export class BookingsAdminController {
   ) {
     await this.userService.validateIfUserIsAdmin(currentUser.userId);
     const data = await this.adminBookingService.getAllBookings(query);
+    const result = {
+      ...CommonSuccessResponseObject,
+      data,
+    };
+    return result;
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Retrieve bookings Detail by id' })
+  @ApiBearerAuth('JWT')
+  @UseGuards(CommonAuthGuard)
+  async getBookingDetailsParamsId(
+    @GetCurrentUser() currentUser: CurrentUser,
+    @Param('id') id: string,
+  ) {
+    await this.userService.validateIfUserIsAdmin(currentUser.userId);
+    const data = await this.adminBookingService.getBookingById(id);
     const result = {
       ...CommonSuccessResponseObject,
       data,
