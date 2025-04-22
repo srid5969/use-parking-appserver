@@ -44,5 +44,6 @@ import { UserService } from './services/users/users-common.service';
     CustomerProfileService,
   ],
   controllers: [AdminController, PropertyOwnerController, CustomersController],
+  exports: [UserService],
 })
 export class UsersModule {}
