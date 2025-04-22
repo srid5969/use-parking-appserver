@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
+import { CommonSuccessResponseObject } from '../../common/consts';
 import {
   CurrentUser,
   GetCurrentUser,
@@ -8,7 +9,6 @@ import {
 import { QueryParams } from '../../common/dtos/query-params.dto';
 import { UserService } from '../../users/services/users/users-common.service';
 import { BookingAdminService } from '../services/admin.service';
-import { CommonSuccessResponseObject } from '../../common/consts';
 
 @Controller('admin/bookings')
 @ApiTags('Admin')
