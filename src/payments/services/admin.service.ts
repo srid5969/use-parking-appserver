@@ -51,4 +51,9 @@ export class AdminTransactionManagementService {
 
     return { data, totalCount };
   }
+
+  async getTransactionDetailById(id: string) {
+    const data = await this.paymentModel.findById(id);
+    return data;
+  }
 }
