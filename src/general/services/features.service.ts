@@ -18,7 +18,7 @@ export class FeatureManagementService {
   async getAllFeatures(params: QueryParams) {
     const page = params.page || 1;
     const limit = params.limit || 24;
-    const sort = params.sort || 'createdAt|DESC';
+    const sort = params.sort || '_id|DESC';
     const filters = params.filters || '';
     const textSearch = params.textSearch || '';
     const skip = page * limit - limit;

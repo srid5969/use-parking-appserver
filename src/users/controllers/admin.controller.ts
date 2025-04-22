@@ -9,7 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonAuthGuard } from '../../common/auth/auth-guard';
 import { CommonSuccessResponseObject } from '../../common/consts';
 import {
@@ -29,6 +29,7 @@ import { AdminProfileService } from '../services/admin/admin-profile.service';
 import { UserService } from '../services/users/users-common.service';
 
 @Controller('admin')
+@ApiTags('Admin')
 export class AdminController {
   constructor(
     private readonly loginService: AdminLoginService,

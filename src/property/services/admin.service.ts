@@ -20,7 +20,7 @@ export class AdminPropertyManagementService {
   async getPropertiesByOwnerId(params: QueryParams, owner_id: string) {
     const page = params.page || 1;
     const limit = params.limit || 24;
-    const sort = params.sort || 'createdAt|DESC';
+    const sort = params.sort || '_id|DESC';
     const filters = params.filters || '';
     const textSearch = params.textSearch || '';
     const skip = page * limit - limit;
@@ -70,7 +70,7 @@ export class AdminPropertyManagementService {
   async getAllProperties(queryParams: QueryParams) {
     const page = queryParams.page || 1;
     const limit = queryParams.limit || 24;
-    const sort = queryParams.sort || 'createdAt|DESC';
+    const sort = queryParams.sort || '_id|DESC';
     const filters = queryParams.filters || '';
     const textSearch = queryParams.textSearch || '';
     const skip = page * limit - limit;
